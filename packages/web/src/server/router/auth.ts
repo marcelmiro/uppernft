@@ -1,0 +1,118 @@
+import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
+
+import { createRouter } from './context'
+import {
+	signup,
+	login,
+	validateSession,
+	generateWalletFromEntropy,
+} from '../../lib/auth'
+
+export const authRouter = createRouter()
+	.mutation('signup', {
+		input: z.object({
+			email: z.string().email('Invalid email'),
+			username: z
+				.string()
+				.min(1, 'Username is required')
+				.min(4, 'Username must be at least 4 characters long'),
+			password: z
+				.string()
+				.min(1, 'Password is required')
+				.min(8, 'Password must be at least 8 characters long')
+				.regex(
+					/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~!@#$%^&*()_\-+=[\]{}:;"'|\\<>,./?€]).*$/g,
+					'Password must use a mix of letters, numbers and symbols'
+				),
+		}),
+		async resolve({ ctx, input }) {
+			try {
+				input.email = input.email.toLowerCase()
+				input.username = input.username.toLowerCase()
+
+				const user = await ctx.prisma.user.findFirst({
+					where: {
+						OR: [
+							{ email: input.email },
+							{ username: input.username },
+						],
+					},
+				})
+
+				if (user) {
+					if (user.email === input.email)
+						throw new TRPCError({
+							code: 'BAD_REQUEST',
+							message: 'Email is already in use',
+						})
+					if (user.username === input.username)
+						throw new TRPCError({
+							code: 'BAD_REQUEST',
+							message: 'Username is already in use',
+						})
+				}
+
+				const res = await signup({ ctx, ...input })
+				ctx.res?.setHeader(
+					'Authorization',
+					'Bearer ' + res.sessionToken
+				)
+				return res
+			} catch (e) {
+				if (e instanceof TRPCError) throw e
+				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+			}
+		},
+	})
+	.mutation('login', {
+		input: z.object({
+			email: z.string().email('Invalid email'),
+			password: z.string().min(1, 'Password is required'),
+		}),
+		async resolve({ ctx, input }) {
+			try {
+				const res = await login({ ctx, ...input })
+
+				if (!res)
+					throw new TRPCError({
+						code: 'NOT_FOUND',
+						message: 'Invalid email or password',
+					})
+
+				return res
+			} catch (e) {
+				if (e instanceof TRPCError) throw e
+				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+			}
+		},
+	})
+	.query('verify', {
+		async resolve({ ctx }) {
+			try {
+				const token = ctx.req?.headers.authorization
+				const sessionToken = token?.split('Bearer ')?.[1]
+
+				if (!sessionToken)
+					throw new TRPCError({
+						code: 'FORBIDDEN',
+						message: 'Session Id is required',
+					})
+
+				const user = await validateSession({ ctx, sessionToken })
+
+				if (!user)
+					throw new TRPCError({
+						code: 'UNAUTHORIZED',
+						message: 'Invalid user',
+					})
+
+				const { entropy } = user
+				const wallet = await generateWalletFromEntropy(entropy)
+				return { wallet }
+			} catch (e) {
+				if (e instanceof TRPCError) throw e
+				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+			}
+		},
+	})
