@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
 	StyleSheet,
 	Text as DefaultText,
@@ -7,20 +8,25 @@ import {
 	ActivityIndicator,
 	PressableProps,
 	GestureResponderEvent,
+	StyleProp,
+	ViewStyle,
+	Switch as DefaultSwitch,
 } from 'react-native'
-import { useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 
 import Colors from '../constants/Colors'
 
 type TextLinkProps = DefaultText['props'] & {
-	onClick(): void
+	onPress(): void
+	containerStyle?: DefaultText['props']['style']
+	hitSlop?: number
 }
 
 type ButtonProps = DefaultText['props'] & {
 	onPress: PressableProps['onPress']
 	disabled?: boolean
 	showLoadingSpinner?: boolean
+	containerStyle?: StyleProp<ViewStyle>
 }
 
 export function Text(props: DefaultText['props']) {
@@ -37,6 +43,7 @@ export function Button({
 	onPress,
 	disabled,
 	showLoadingSpinner = false,
+	containerStyle,
 	...props
 }: ButtonProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -56,11 +63,12 @@ export function Button({
 			onPress={handlePress}
 			style={({ pressed }) => [
 				styles.button,
+				containerStyle,
 				disabled && styles.buttonDisabled,
 				pressed && styles.buttonPressed,
 				isLoading && styles.buttonPressed,
 			]}
-			disabled={disabled}
+			disabled={disabled || isLoading}
 		>
 			{showLoadingSpinner && isLoading && (
 				<ActivityIndicator
@@ -69,19 +77,31 @@ export function Button({
 					style={styles.loadingSpinner}
 				/>
 			)}
-			<Text style={styles.buttonText} {...props} />
+			<Text style={[styles.buttonText, props.style]} {...props} />
 		</Pressable>
 	)
 }
 
 export function Title({ style, ...props }: DefaultText['props']) {
-	return <Text style={[styles.title]} {...props} />
+	return <Text style={[styles.title, style]} {...props} />
 }
 
-export function TextLink({ onClick, style, ...props }: TextLinkProps) {
+export function TextLink({
+	onPress,
+	style,
+	containerStyle,
+	hitSlop = 8,
+	...props
+}: TextLinkProps) {
+	const hitSlopInsets = {
+		top: hitSlop,
+		left: hitSlop,
+		bottom: hitSlop,
+		right: hitSlop,
+	}
 	return (
-		<Text>
-			<TouchableOpacity onPress={onClick}>
+		<Text style={containerStyle}>
+			<TouchableOpacity onPress={onPress} hitSlop={hitSlopInsets}>
 				<Text style={[style, styles.textLink]} {...props} />
 			</TouchableOpacity>
 		</Text>
@@ -106,6 +126,23 @@ export function ErrorMessage({ style, ...props }: DefaultText['props']) {
 	)
 }
 
+export function Switch(props: DefaultSwitch['props']) {
+	return (
+		<DefaultSwitch
+			thumbColor={(props.value && Colors.accent) || undefined}
+			trackColor={{ true: Colors.accent200 }}
+			{...props}
+		/>
+	)
+}
+
+export const layoutStyle = {
+	width: '100%',
+	marginTop: 48,
+	marginBottom: 16,
+	paddingHorizontal: 20,
+}
+
 const styles = StyleSheet.create({
 	text: {
 		color: Colors.primary,
@@ -117,21 +154,20 @@ const styles = StyleSheet.create({
 		fontSize: 32,
 		color: Colors.primary,
 		textAlign: 'center',
-		marginVertical: 32,
 	},
 	textLink: {
+		fontWeight: '500',
 		color: Colors.accent,
 	},
 	view: {},
 	button: {
+		width: '100%',
 		height: 50,
 		minHeight: 50,
 		maxHeight: 50,
-		width: '100%',
 		marginVertical: 16,
 		backgroundColor: Colors.accent,
 		borderRadius: 16,
-		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',

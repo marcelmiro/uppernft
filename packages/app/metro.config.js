@@ -15,6 +15,15 @@ config.resolver.nodeModulesPaths = [
 	path.resolve(workspaceRoot, 'node_modules'),
 ]
 
-config.resolver.sourceExts = [...config.resolver.sourceExts, 'cjs']
+// Allow SVG file import in app
+config.transformer = {
+	...(config.transformer || {}),
+	babelTransformerPath: require.resolve('react-native-svg-transformer'),
+}
+config.resolver.assetExts = config.resolver.assetExts.filter(
+	(ext) => ext !== 'svg'
+)
+
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'cjs', 'svg']
 
 module.exports = config

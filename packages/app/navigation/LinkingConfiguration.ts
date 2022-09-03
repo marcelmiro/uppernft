@@ -14,22 +14,20 @@ const linking: LinkingOptions<RootStackParamList> = {
 	config: {
 		screens: {
 			Root: {
+				initialRouteName: 'Home',
 				screens: {
-					Login: {
-						screens: {
-							Login: 'login',
-						},
-					},
-					Signup: {
-						screens: {
-							Signup: 'signup',
-						},
-					},
-					Home: {
-						screens: {
-							Home: 'home',
-						},
-					},
+					Login: 'login',
+					Signup: 'signup',
+
+					Account: 'account',
+					UsernameChange: 'account/username-change',
+
+					BikeRegister: 'bike/register',
+					BikeMenu: 'bike/:id',
+					BikeOverview: 'bike/:id/overview',
+					BikeActivity: 'bike/:id/activity',
+					BikeTransfer: 'bike/:id/transfer',
+					BikeSettings: 'bike/:id/settings',
 				},
 			},
 			Modal: 'modal',

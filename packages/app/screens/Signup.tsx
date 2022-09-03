@@ -1,13 +1,13 @@
+import { useState, useEffect } from 'react'
 import {
 	StyleSheet,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
 } from 'react-native'
-import { useState, useEffect } from 'react'
 import { z } from 'zod'
 
-import { RootTabScreenProps } from '../types'
+import { AuthTabScreenProps } from '../types'
 import Colors from '../constants/Colors'
 import {
 	Text,
@@ -16,6 +16,7 @@ import {
 	View,
 	Button,
 	ErrorMessage,
+	layoutStyle,
 } from '../components/Themed'
 import Input from '../components/Input'
 import { useAuth } from '../context/auth'
@@ -29,7 +30,7 @@ const schema = z.object({
 		.min(8, 'Password must be at least 8 characters long'),
 })
 
-export default function Signup({ navigation }: RootTabScreenProps<'Signup'>) {
+export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 	const [email, setEmail] = useState('')
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
@@ -67,56 +68,62 @@ export default function Signup({ navigation }: RootTabScreenProps<'Signup'>) {
 	}, [email, password])
 
 	return (
-		<ScrollView contentContainerStyle={styles.wrapper}>
+		<ScrollView
+			style={{ width: '100%' }}
+			contentContainerStyle={styles.fullScreen}
+		>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.container}
+				style={styles.fullScreen}
 			>
-				<View>
-					<Title>Sign up</Title>
+				<View style={styles.container}>
+					<View>
+						<Title style={styles.title}>Sign up</Title>
 
-					<Input
-						value={email}
-						onChange={setEmail}
-						placeholder="Email"
-					/>
+						<Input
+							value={email}
+							onChange={setEmail}
+							label="Email"
+							keyboardType="email-address"
+						/>
 
-					<Input
-						value={username}
-						onChange={setUsername}
-						placeholder="Username"
-					/>
+						<Input
+							value={username}
+							onChange={setUsername}
+							label="Username"
+						/>
 
-					<Input
-						value={password}
-						onChange={setPassword}
-						placeholder="Password"
-						// secureTextEntry
-					/>
+						<Input
+							value={password}
+							onChange={setPassword}
+							label="Password"
+							// secureTextEntry
+						/>
 
-					{!!error && <ErrorMessage>{error}</ErrorMessage>}
-				</View>
+						{!!error && <ErrorMessage>{error}</ErrorMessage>}
+					</View>
 
-				<View>
-					<Button
-						onPress={handleSignup}
-						disabled={isButtonDisabled}
-						showLoadingSpinner
-					>
-						Sign up
-					</Button>
-
-					<View style={styles.pageSwitch}>
-						<Text style={styles.pageSwitchText}>
-							Have an account?{' '}
-						</Text>
-
-						<TextLink
-							style={styles.pageSwitchText}
-							onClick={() => navigation.navigate('Login')}
+					<View>
+						<Button
+							onPress={handleSignup}
+							disabled={isButtonDisabled}
+							showLoadingSpinner
 						>
-							Log in
-						</TextLink>
+							Sign up
+						</Button>
+
+						<View style={styles.pageSwitch}>
+							<Text style={styles.pageSwitchText}>
+								Have an account?{' '}
+							</Text>
+
+							<TextLink
+								style={styles.pageSwitchText}
+								onPress={() => navigation.navigate('Login')}
+							>
+								Log in
+							</TextLink>
+						</View>
 					</View>
 				</View>
 			</KeyboardAvoidingView>
@@ -125,19 +132,23 @@ export default function Signup({ navigation }: RootTabScreenProps<'Signup'>) {
 }
 
 const styles = StyleSheet.create({
-	wrapper: {
+	fullScreen: {
+		width: '100%',
 		flex: 1,
-		alignItems: 'center',
 	},
 	container: {
-		width: '100%',
-		maxWidth: 310,
+		...layoutStyle,
+		marginBottom: 8,
 		flex: 1,
 		justifyContent: 'space-between',
 	},
+	title: {
+		marginTop: 8,
+		marginBottom: 32,
+	},
 	pageSwitch: {
 		height: 20,
-		marginBottom: 64,
+		marginBottom: 20,
 		textAlign: 'center',
 		flexDirection: 'row',
 		justifyContent: 'center',

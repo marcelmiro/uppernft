@@ -1,24 +1,20 @@
 import type { ExpoConfig } from '@expo/config'
+import { config as dotenv } from 'dotenv'
+import path from 'path'
 
 const STAGE = process?.env.STAGE || process?.env.NODE_ENV
 
-const envVariables: Record<string, Record<string, string>> = {
-	development: {
-		API_URL: 'http://192.168.1.123:3000/api/trpc',
-	},
-	production: {
-		// API_URL: 'https://uppernft.vercel.app/api/trpc',
-	},
-	staging: {},
-}
+const envDirectory = path.resolve(__dirname, '../../.env')
+dotenv({ path: envDirectory })
 
 const config: ExpoConfig = {
 	name: 'upperNFT demo',
 	slug: 'uppernft-demo',
-	version: '1.0.0',
+	version: '0.1.0',
+	owner: 'marcelmiro',
 	orientation: 'portrait',
 	icon: './assets/images/icon.png',
-	scheme: 'uppernft-demo',
+	scheme: 'unft',
 	userInterfaceStyle: 'automatic',
 	backgroundColor: '#F7F7F7',
 	splash: {
@@ -30,22 +26,32 @@ const config: ExpoConfig = {
 		fallbackToCacheTimeout: 0,
 	},
 	assetBundlePatterns: ['**/*'],
+	jsEngine: 'hermes',
 	ios: {
-		supportsTablet: true,
+		appStoreUrl: 'https://apps.apple.com/es/app/google/id284815942',
+		userInterfaceStyle: 'light',
 	},
 	android: {
+		package: 'com.uppernft.demo',
 		adaptiveIcon: {
 			foregroundImage: './assets/images/adaptive-icon.png',
 			backgroundColor: '#F7F7F7',
 		},
+		playStoreUrl:
+			'https://play.google.com/store/apps/details?id=com.google.android.googlequicksearchbox',
+		userInterfaceStyle: 'light',
 	},
-	web: {
+	/* web: {
 		favicon: './assets/images/favicon.png',
-	},
+	}, */
 	extra: {
 		STAGE,
 		SID_NAME: 'uppernft.sid',
-		...(envVariables[STAGE || 'development'] || {}),
+		API_URL: process.env.API_URL,
+		TWITTER_URL: 'https://twitter.com/google',
+		eas: {
+			projectId: 'e351ac5e-6d7e-42f2-8619-71ed76d4b7f4',
+		},
 	},
 }
 

@@ -1,21 +1,27 @@
-import { StyleSheet, TextInput, Pressable } from 'react-native'
 import { useState, useRef } from 'react'
+import { StyleSheet, TextInput, Pressable } from 'react-native'
 
 import Colors from '../constants/Colors'
 import { Text, View } from '../components/Themed'
 
+export type KeyboardType = TextInput['props']['keyboardType']
+
 interface InputProps {
 	value: string
 	onChange(value: string): void
-	placeholder: string
+	label: string
+	placeholder?: string
 	secureTextEntry?: boolean
+	keyboardType?: KeyboardType
 }
 
 export default function Input({
 	value,
 	onChange,
+	label,
 	placeholder,
 	secureTextEntry = false,
+	keyboardType = 'default',
 }: InputProps) {
 	const [isFocused, setIsFocused] = useState(false)
 	const inputRef = useRef<TextInput>(null)
@@ -23,17 +29,19 @@ export default function Input({
 	return (
 		<View style={[styles.container, isFocused && styles.containerFocus]}>
 			<Pressable onPress={() => inputRef.current?.focus()} hitSlop={16}>
-				<Text style={styles.label}>{placeholder}</Text>
+				<Text style={styles.label}>{label}</Text>
 			</Pressable>
 
 			<TextInput
 				value={value}
 				onChangeText={onChange}
-				placeholder={placeholder}
+				placeholder={placeholder || label}
+				placeholderTextColor={Colors.primary300}
 				style={styles.input}
 				onFocus={() => setIsFocused(true)}
 				onBlur={() => setIsFocused(false)}
 				secureTextEntry={secureTextEntry}
+				keyboardType={keyboardType}
 				ref={inputRef}
 			/>
 		</View>
@@ -62,5 +70,6 @@ const styles = StyleSheet.create({
 	input: {
 		color: Colors.primary,
 		fontSize: 16,
+		flexWrap: 'nowrap',
 	},
 })

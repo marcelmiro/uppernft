@@ -14,21 +14,18 @@ export default function App() {
 	const [trpcClient] = useState(() => createTRPCClient())
 
 	const isLoadingComplete = useCachedResources()
+	if (!isLoadingComplete) return null
 
-	if (!isLoadingComplete) {
-		return null
-	} else {
-		return (
-			<trpc.Provider client={trpcClient} queryClient={queryClient}>
-				<QueryClientProvider client={queryClient}>
-					<AuthProvider>
-						<SafeAreaProvider>
-							<Navigation />
-							<StatusBar />
-						</SafeAreaProvider>
-					</AuthProvider>
-				</QueryClientProvider>
-			</trpc.Provider>
-		)
-	}
+	return (
+		<trpc.Provider client={trpcClient} queryClient={queryClient}>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<SafeAreaProvider style={{ flex: 1, width: '100%' }}>
+						<Navigation />
+						<StatusBar />
+					</SafeAreaProvider>
+				</AuthProvider>
+			</QueryClientProvider>
+		</trpc.Provider>
+	)
 }

@@ -1,13 +1,13 @@
+import { useState, useEffect } from 'react'
 import {
 	StyleSheet,
 	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
 } from 'react-native'
-import { useState, useEffect } from 'react'
 import { z } from 'zod'
 
-import { RootTabScreenProps } from '../types'
+import { AuthTabScreenProps } from '../types'
 import Colors from '../constants/Colors'
 import {
 	Text,
@@ -16,6 +16,7 @@ import {
 	View,
 	Button,
 	ErrorMessage,
+	layoutStyle,
 } from '../components/Themed'
 import Input from '../components/Input'
 import { useAuth } from '../context/auth'
@@ -29,7 +30,7 @@ const schema = z.object({
 		.min(8, 'Password must be at least 8 characters long'),
 })
 
-export default function Login({ navigation }: RootTabScreenProps<'Login'>) {
+export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState('')
@@ -67,53 +68,62 @@ export default function Login({ navigation }: RootTabScreenProps<'Login'>) {
 	}, [email, password])
 
 	return (
-		<ScrollView contentContainerStyle={styles.wrapper}>
+		<ScrollView
+			style={{ width: '100%' }}
+			contentContainerStyle={styles.fullScreen}
+		>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.container}
+				style={styles.fullScreen}
 			>
-				<View>
-					<Title>Log in</Title>
+				<View style={styles.container}>
+					<View>
+						<Title style={styles.title}>Log in</Title>
 
-					<Input
-						value={email}
-						onChange={setEmail}
-						placeholder="Email"
-					/>
+						<Input
+							value={email}
+							onChange={setEmail}
+							label="Email"
+							keyboardType="email-address"
+						/>
 
-					<Input
-						value={password}
-						onChange={setPassword}
-						placeholder="Password"
-						// secureTextEntry
-					/>
+						<Input
+							value={password}
+							onChange={setPassword}
+							label="Password"
+							// secureTextEntry
+						/>
 
-					{!!error && <ErrorMessage>{error}</ErrorMessage>}
+						{!!error && <ErrorMessage>{error}</ErrorMessage>}
 
-					<TextLink style={styles.forgotPassword} onClick={() => {}}>
-						Forgot password?
-					</TextLink>
-				</View>
-
-				<View>
-					<Button
-						onPress={handleLogin}
-						disabled={isButtonDisabled}
-						showLoadingSpinner
-					>
-						Log in
-					</Button>
-
-					<View style={styles.pageSwitch}>
-						<Text style={styles.pageSwitchText}>
-							Don't have an account?{' '}
-						</Text>
 						<TextLink
-							style={styles.pageSwitchText}
-							onClick={() => navigation.navigate('Signup')}
+							style={styles.forgotPassword}
+							onPress={() => {}}
 						>
-							Sign up
+							Forgot password?
 						</TextLink>
+					</View>
+
+					<View>
+						<Button
+							onPress={handleLogin}
+							disabled={isButtonDisabled}
+							showLoadingSpinner
+						>
+							Log in
+						</Button>
+
+						<View style={styles.pageSwitch}>
+							<Text style={styles.pageSwitchText}>
+								Don't have an account?{' '}
+							</Text>
+							<TextLink
+								style={styles.pageSwitchText}
+								onPress={() => navigation.navigate('Signup')}
+							>
+								Sign up
+							</TextLink>
+						</View>
 					</View>
 				</View>
 			</KeyboardAvoidingView>
@@ -122,15 +132,19 @@ export default function Login({ navigation }: RootTabScreenProps<'Login'>) {
 }
 
 const styles = StyleSheet.create({
-	wrapper: {
+	fullScreen: {
+		width: '100%',
 		flex: 1,
-		alignItems: 'center',
 	},
 	container: {
-		width: '100%',
-		maxWidth: 310,
+		...layoutStyle,
+		marginBottom: 8,
 		flex: 1,
 		justifyContent: 'space-between',
+	},
+	title: {
+		marginTop: 8,
+		marginBottom: 32,
 	},
 	forgotPassword: {
 		flex: 1,
@@ -139,7 +153,7 @@ const styles = StyleSheet.create({
 	},
 	pageSwitch: {
 		height: 20,
-		marginBottom: 64,
+		marginBottom: 20,
 		textAlign: 'center',
 		flexDirection: 'row',
 		justifyContent: 'center',

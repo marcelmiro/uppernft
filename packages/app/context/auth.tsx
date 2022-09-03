@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import * as SecureStore from 'expo-secure-store'
 import Constants from 'expo-constants'
 import type Wallet from 'ethereumjs-wallet'
@@ -100,7 +100,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	async function checkWalletStatus() {
 		try {
-			const sessionToken = await SecureStore.getItemAsync(sessionName)
+			let _sessionName: string | undefined = sessionName
+
+			if (!_sessionName) {
+				_sessionName = Constants.manifest?.extra?.SID_NAME as
+					| string
+					| undefined
+				if (!_sessionName)
+					throw new Error('Session name variable not found')
+				setSessionName(_sessionName)
+			}
+
+			const sessionToken = await SecureStore.getItemAsync(_sessionName)
 			if (!sessionToken) return
 
 			const { entropy } = decodeSessionToken(sessionToken)
@@ -111,17 +122,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		} catch (e) {
 			setIsAuthenticated(false)
 			setWallet(null)
+		} finally {
+			setIsReady(true)
 		}
 	}
 
 	useEffect(() => {
-		const sessionName = Constants.manifest?.extra?.SID_NAME as
-			| string
-			| undefined
-		if (!sessionName) throw new Error('Session name variable not found')
-
-		setSessionName(sessionName)
-		checkWalletStatus().then(() => setIsReady(true))
+		checkWalletStatus()
 	}, [])
 
 	const value = {
