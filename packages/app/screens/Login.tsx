@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-	StyleSheet,
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-} from 'react-native'
+import { StyleSheet } from 'react-native'
 import { z } from 'zod'
 
 import { AuthTabScreenProps } from '../types'
@@ -16,6 +11,7 @@ import {
 	View,
 	Button,
 	ErrorMessage,
+	LayoutScrollView,
 	layoutStyle,
 } from '../components/Themed'
 import Input from '../components/Input'
@@ -52,10 +48,13 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 			setIsButtonDisabled(true)
 			setError('')
 		} catch (e) {
-			console.error(e)
-			if (!(e instanceof Error)) return
+			if (!(e instanceof Error)) throw e
 			let message = e.message
-			if (!message || message === 'Failed to fetch')
+			if (
+				!message ||
+				message === 'Failed to fetch' ||
+				message === 'Network request failed'
+			)
 				message =
 					'An unexpected error occurred - Please try again later'
 			setIsButtonDisabled(true)
@@ -68,74 +67,59 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 	}, [email, password])
 
 	return (
-		<ScrollView
-			style={{ width: '100%' }}
-			contentContainerStyle={styles.fullScreen}
-		>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.fullScreen}
-			>
-				<View style={styles.container}>
-					<View>
-						<Title style={styles.title}>Log in</Title>
+		<LayoutScrollView>
+			<View style={styles.container}>
+				<View>
+					<Title style={styles.title}>Log in</Title>
 
-						<Input
-							value={email}
-							onChange={setEmail}
-							label="Email"
-							keyboardType="email-address"
-						/>
+					<Input
+						value={email}
+						onChange={setEmail}
+						label="Email"
+						keyboardType="email-address"
+					/>
 
-						<Input
-							value={password}
-							onChange={setPassword}
-							label="Password"
-							// secureTextEntry
-						/>
+					<Input
+						value={password}
+						onChange={setPassword}
+						label="Password"
+						// secureTextEntry
+					/>
 
-						{!!error && <ErrorMessage>{error}</ErrorMessage>}
+					{!!error && <ErrorMessage>{error}</ErrorMessage>}
 
+					<TextLink style={styles.forgotPassword} onPress={() => {}}>
+						Forgot password?
+					</TextLink>
+				</View>
+
+				<View>
+					<Button
+						onPress={handleLogin}
+						disabled={isButtonDisabled}
+						showLoadingSpinner
+					>
+						Log in
+					</Button>
+
+					<View style={styles.pageSwitch}>
+						<Text style={styles.pageSwitchText}>
+							Don't have an account?{' '}
+						</Text>
 						<TextLink
-							style={styles.forgotPassword}
-							onPress={() => {}}
+							style={styles.pageSwitchText}
+							onPress={() => navigation.navigate('Signup')}
 						>
-							Forgot password?
+							Sign up
 						</TextLink>
 					</View>
-
-					<View>
-						<Button
-							onPress={handleLogin}
-							disabled={isButtonDisabled}
-							showLoadingSpinner
-						>
-							Log in
-						</Button>
-
-						<View style={styles.pageSwitch}>
-							<Text style={styles.pageSwitchText}>
-								Don't have an account?{' '}
-							</Text>
-							<TextLink
-								style={styles.pageSwitchText}
-								onPress={() => navigation.navigate('Signup')}
-							>
-								Sign up
-							</TextLink>
-						</View>
-					</View>
 				</View>
-			</KeyboardAvoidingView>
-		</ScrollView>
+			</View>
+		</LayoutScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
-	fullScreen: {
-		width: '100%',
-		flex: 1,
-	},
 	container: {
 		...layoutStyle,
 		marginBottom: 8,

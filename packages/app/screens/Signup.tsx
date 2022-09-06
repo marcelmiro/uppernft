@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-	StyleSheet,
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-} from 'react-native'
+import { StyleSheet } from 'react-native'
 import { z } from 'zod'
 
 import { AuthTabScreenProps } from '../types'
@@ -16,6 +11,7 @@ import {
 	View,
 	Button,
 	ErrorMessage,
+	LayoutScrollView,
 	layoutStyle,
 } from '../components/Themed'
 import Input from '../components/Input'
@@ -68,18 +64,12 @@ export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 	}, [email, password])
 
 	return (
-		<ScrollView
-			style={{ width: '100%' }}
-			contentContainerStyle={styles.fullScreen}
-		>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.fullScreen}
-			>
-				<View style={styles.container}>
-					<View>
-						<Title style={styles.title}>Sign up</Title>
+		<LayoutScrollView>
+			<View style={styles.container}>
+				<View>
+					<Title style={styles.title}>Sign up</Title>
 
+					<View>
 						<Input
 							value={email}
 							onChange={setEmail}
@@ -102,40 +92,36 @@ export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 
 						{!!error && <ErrorMessage>{error}</ErrorMessage>}
 					</View>
+				</View>
 
-					<View>
-						<Button
-							onPress={handleSignup}
-							disabled={isButtonDisabled}
-							showLoadingSpinner
+				<View>
+					<Button
+						onPress={handleSignup}
+						disabled={isButtonDisabled}
+						showLoadingSpinner
+					>
+						Sign up
+					</Button>
+
+					<View style={styles.pageSwitchContainer}>
+						<Text style={styles.pageSwitchText}>
+							Have an account?{' '}
+						</Text>
+
+						<TextLink
+							style={styles.pageSwitchText}
+							onPress={() => navigation.navigate('Login')}
 						>
-							Sign up
-						</Button>
-
-						<View style={styles.pageSwitch}>
-							<Text style={styles.pageSwitchText}>
-								Have an account?{' '}
-							</Text>
-
-							<TextLink
-								style={styles.pageSwitchText}
-								onPress={() => navigation.navigate('Login')}
-							>
-								Log in
-							</TextLink>
-						</View>
+							Log in
+						</TextLink>
 					</View>
 				</View>
-			</KeyboardAvoidingView>
-		</ScrollView>
+			</View>
+		</LayoutScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
-	fullScreen: {
-		width: '100%',
-		flex: 1,
-	},
 	container: {
 		...layoutStyle,
 		marginBottom: 8,
@@ -146,7 +132,7 @@ const styles = StyleSheet.create({
 		marginTop: 8,
 		marginBottom: 32,
 	},
-	pageSwitch: {
+	pageSwitchContainer: {
 		height: 20,
 		marginBottom: 20,
 		textAlign: 'center',

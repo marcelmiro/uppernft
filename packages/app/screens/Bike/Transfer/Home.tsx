@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import {
-	ScrollView,
-	KeyboardAvoidingView,
-	Platform,
-	StyleSheet,
-	Pressable,
-} from 'react-native'
+import { StyleSheet, Pressable } from 'react-native'
 
 import Colors from '../../../constants/Colors'
 import { BikeTransferStackScreenProps } from '../../../types'
-import { View, Text, Button, layoutStyle } from '../../../components/Themed'
+import {
+	View,
+	Text,
+	Button,
+	LayoutScrollView,
+	layoutStyle,
+} from '../../../components/Themed'
 import Header from '../../../components/Header'
 import Input, { KeyboardType } from '../../../components/Input'
 
@@ -41,87 +41,69 @@ export default function BikeTransferHome(
 	}
 
 	return (
-		<ScrollView
-			style={{ width: '100%' }}
-			contentContainerStyle={styles.fullScreen}
-		>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.fullScreen}
-			>
-				<View style={styles.container}>
-					<View>
-						<Header
-							{...props}
-							style={styles.header}
-							title="Transfer"
-						/>
+		<LayoutScrollView>
+			<View style={styles.container}>
+				<View>
+					<Header {...props} style={styles.header} title="Transfer" />
 
-						<View style={styles.inputTypeContainer}>
-							<Pressable
-								style={[
-									styles.inputTypeButton,
-									inputType === 'username' &&
-										styles.inputTypeButtonActive,
-								]}
-								onPress={() => changeInputType('username')}
-							>
-								<Text>Username</Text>
-							</Pressable>
+					<View style={styles.inputTypeContainer}>
+						<Pressable
+							style={[
+								styles.inputTypeButton,
+								inputType === 'username' &&
+									styles.inputTypeButtonActive,
+							]}
+							onPress={() => changeInputType('username')}
+						>
+							<Text>Username</Text>
+						</Pressable>
 
-							<Pressable
-								style={[
-									styles.inputTypeButton,
-									inputType === 'email' &&
-										styles.inputTypeButtonActive,
-								]}
-								onPress={() => changeInputType('email')}
-							>
-								<Text>Email</Text>
-							</Pressable>
+						<Pressable
+							style={[
+								styles.inputTypeButton,
+								inputType === 'email' &&
+									styles.inputTypeButtonActive,
+							]}
+							onPress={() => changeInputType('email')}
+						>
+							<Text>Email</Text>
+						</Pressable>
 
-							<Pressable
-								style={[
-									styles.inputTypeButton,
-									inputType === 'address' &&
-										styles.inputTypeButtonActive,
-								]}
-								onPress={() => changeInputType('address')}
-							>
-								<Text>Address</Text>
-							</Pressable>
-						</View>
-
-						<Input
-							value={inputValue}
-							onChange={setInputValue}
-							label={
-								inputType[0].toUpperCase() + inputType.slice(1)
-							}
-							placeholder={placeholders[inputType]}
-							keyboardType={keyboardTypes[inputType]}
-						/>
+						<Pressable
+							style={[
+								styles.inputTypeButton,
+								inputType === 'address' &&
+									styles.inputTypeButtonActive,
+							]}
+							onPress={() => changeInputType('address')}
+						>
+							<Text>Address</Text>
+						</Pressable>
 					</View>
 
-					<Button
-						onPress={() =>
-							props.navigation.replace('AfterTransferInfo')
-						}
-						showLoadingSpinner
-					>
-						Transfer
-					</Button>
+					<Input
+						value={inputValue}
+						onChange={setInputValue}
+						label={inputType[0].toUpperCase() + inputType.slice(1)}
+						placeholder={placeholders[inputType]}
+						keyboardType={keyboardTypes[inputType]}
+					/>
 				</View>
-			</KeyboardAvoidingView>
-		</ScrollView>
+
+				<Button
+					onPress={() =>
+						props.navigation.replace('AfterTransferInfo')
+					}
+					showLoadingSpinner
+				>
+					Transfer
+				</Button>
+			</View>
+		</LayoutScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
-	fullScreen: {
-		width: '100%',
-		flex: 1,
-	},
 	container: {
 		...layoutStyle,
 		marginBottom: 8,

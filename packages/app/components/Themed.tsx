@@ -11,6 +11,7 @@ import {
 	StyleProp,
 	ViewStyle,
 	Switch as DefaultSwitch,
+	ScrollView,
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
@@ -37,6 +38,17 @@ export function Text(props: DefaultText['props']) {
 export function View(props: DefaultView['props']) {
 	const { style, ...otherProps } = props
 	return <DefaultView style={[styles.view, style]} {...otherProps} />
+}
+
+export function LayoutScrollView(props: DefaultView['props']) {
+	const { style, ...otherProps } = props
+	return (
+		<ScrollView
+			style={[{ flexGrow: 1 }, style]}
+			contentContainerStyle={{ flexGrow: 1 }}
+			{...otherProps}
+		/>
+	)
 }
 
 export function Button({

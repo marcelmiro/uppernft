@@ -14,6 +14,7 @@
     "app:web": "yarn workspace @uppernft/app web",
     "app:eject": "yarn workspace @uppernft/app eject",
     "app:test": "yarn workspace @uppernft/app test",
+    "app:build": "cd packages/app && npx eas build -p android --profile preview",
     "dev": "concurrently --kill-others-on-fail \"yarn web:dev\" \"yarn app:android\"",
     "clean": "cmd.exe /c \"@for /d /r . %d in (node_modules) do @if exist %d (echo %d && rd %d /s /q)\" && del .\\yarn.lock",
     "postinstall": "prisma generate && patch-package"

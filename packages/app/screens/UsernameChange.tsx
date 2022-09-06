@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import {
-	StyleSheet,
-	ScrollView,
-	KeyboardAvoidingView,
-	Platform,
-} from 'react-native'
+import { StyleSheet } from 'react-native'
 
 import { MainStackScreenProps } from '../types'
-import { View, Button, layoutStyle } from '../components/Themed'
+import {
+	View,
+	Button,
+	LayoutScrollView,
+	layoutStyle,
+} from '../components/Themed'
 import Input from '../components/Input'
 import Header from '../components/Header'
 
@@ -19,44 +19,32 @@ export default function UsernameChange(
 	const [newUsername, setNewUsername] = useState(username)
 
 	return (
-		<ScrollView
-			style={{ width: '100%' }}
-			contentContainerStyle={styles.fullScreen}
-		>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-				style={styles.fullScreen}
-			>
-				<View style={styles.container}>
-					<View>
-						<Header
-							{...props}
-							style={styles.header}
-							title="Change username"
-						/>
+		<LayoutScrollView>
+			<View style={styles.container}>
+				<View>
+					<Header
+						{...props}
+						style={styles.header}
+						title="Change username"
+					/>
 
-						<Input
-							value={newUsername}
-							onChange={setNewUsername}
-							label="Username"
-							placeholder='@username'
-						/>
-					</View>
-
-					<Button onPress={() => {}} showLoadingSpinner>
-						Change username
-					</Button>
+					<Input
+						value={newUsername}
+						onChange={setNewUsername}
+						label="Username"
+						placeholder="@username"
+					/>
 				</View>
-			</KeyboardAvoidingView>
-		</ScrollView>
+
+				<Button onPress={props.navigation.goBack} showLoadingSpinner>
+					Change username
+				</Button>
+			</View>
+		</LayoutScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
-	fullScreen: {
-		width: '100%',
-		flex: 1,
-	},
 	container: {
 		...layoutStyle,
 		marginBottom: 8,
