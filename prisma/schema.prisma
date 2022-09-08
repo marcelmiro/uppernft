@@ -13,16 +13,72 @@ datasource db {
 }
 
 model Authentication {
-    id         Int    @id @default(autoincrement())
+    lookupKey  String @id @unique
     iv         String
     cipherText String
-    lookupKey  String @unique
 }
 
 model User {
-    id            Int    @id @default(autoincrement())
-    email         String @unique
-    username      String @unique
-    walletAddress String @unique
-    sessionId     String @unique
+    id            Int      @id @default(autoincrement())
+    email         String   @unique
+    username      String   @unique
+    walletAddress String   @unique
+    sessionId     String   @unique
+    items         Item[]
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt @default(now())
+}
+
+model ItemModel {
+    id           Int        @id @default(autoincrement())
+    code         String
+    name         String
+    components   Components @relation(fields: [componentsId], references: [id])
+    componentsId Int        @unique
+}
+
+model Item {
+    id           Int        @id @default(autoincrement())
+    tokenId      Int        @unique
+    name         String
+    modelCode    String
+    serialNumber String     @unique
+    isStolen     Boolean    @default(false)
+    owner        User       @relation(fields: [ownerId], references: [id])
+    ownerId      Int
+    activities   Activity[]
+    components   Components @relation(fields: [componentsId], references: [id])
+    componentsId Int        @unique
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+}
+
+enum ActivityType {
+    MINT
+    TRANSFER
+    REPAIR
+    COMPONENT_CHANGE
+}
+
+model Activity {
+    id        Int          @id @default(autoincrement())
+    type      ActivityType
+    item      Item         @relation(fields: [itemId], references: [id])
+    itemId    Int
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+}
+
+model Components {
+    id        Int        @id @default(autoincrement())
+    frame     String
+    fork      String
+    brakes    String
+    pedals    String
+    wheelset  String
+    tires     String
+    Item      Item?
+    ItemModel ItemModel?
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }

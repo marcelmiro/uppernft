@@ -2,12 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { createRouter } from './context'
-import {
-	signup,
-	login,
-	validateSession,
-	generateWalletFromEntropy,
-} from '../../lib/auth'
+import { signup, login, validateSession } from '../../lib/auth'
 
 export const authRouter = createRouter()
 	.mutation('signup', {
@@ -54,10 +49,12 @@ export const authRouter = createRouter()
 				}
 
 				const res = await signup({ ctx, ...input })
+
 				ctx.res?.setHeader(
 					'Authorization',
 					'Bearer ' + res.sessionToken
 				)
+
 				return res
 			} catch (e) {
 				if (e instanceof TRPCError) throw e
@@ -79,6 +76,11 @@ export const authRouter = createRouter()
 						code: 'NOT_FOUND',
 						message: 'Invalid email or password',
 					})
+
+				ctx.res?.setHeader(
+					'Authorization',
+					'Bearer ' + res.sessionToken
+				)
 
 				return res
 			} catch (e) {
@@ -107,9 +109,12 @@ export const authRouter = createRouter()
 						message: 'Invalid user',
 					})
 
-				const { entropy } = user
-				const wallet = await generateWalletFromEntropy(entropy)
-				return { wallet }
+				// const { entropy } = user
+				// const wallet = await generateWalletFromEntropy(entropy)
+				// return { wallet }
+
+				const res = { email: user.email, username: user.username }
+				return res
 			} catch (e) {
 				if (e instanceof TRPCError) throw e
 				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })

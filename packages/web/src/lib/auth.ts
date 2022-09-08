@@ -82,7 +82,9 @@ export async function signup({
 		}),
 	])
 
-	return { entropy, sessionToken }
+	const user = { email, username }
+
+	return { entropy, sessionToken, user }
 }
 
 export async function login({ ctx, email, password }: LoginOptions) {
@@ -92,22 +94,25 @@ export async function login({ ctx, email, password }: LoginOptions) {
 		createKey
 	)
 
-	const data = await ctx.prisma.authentication.findFirst({
-		where: { lookupKey },
-	})
+	const promises = [
+		ctx.prisma.authentication.findFirst({ where: { lookupKey } }),
+		ctx.prisma.user.findFirst({ where: { email } }),
+	] as const
 
-	if (!data) return null
-	const { iv, cipherText } = data
+	const [auth, user] = await Promise.all(promises)
+	if (!auth || !user) return null
 
 	const { entropy } = await WalletManager.decryptCipherTextAndRetrieveWallet(
 		password,
-		iv,
-		cipherText,
+		auth.iv,
+		auth.cipherText,
 		createKey
 	)
 
 	const sessionToken = `${email}.${entropy}`
-	return { entropy, sessionToken }
+	const userRes = { email, username: user.username }
+
+	return { entropy, sessionToken, user: userRes }
 }
 
 export async function validateSession({

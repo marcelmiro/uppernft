@@ -46,7 +46,6 @@ const config: ExpoConfig = {
 	}, */
 	extra: {
 		STAGE,
-		SID_NAME: 'uppernft.sid',
 		API_URL: process.env.API_URL,
 		TWITTER_URL: 'https://twitter.com/google',
 		eas: {
