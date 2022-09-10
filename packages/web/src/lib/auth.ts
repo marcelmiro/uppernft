@@ -77,7 +77,7 @@ export async function signup({
 		ctx.prisma.user.create({
 			data: { email, username, walletAddress, sessionId },
 		}),
-		ctx.prisma.authentication.create({
+		ctx.prisma.userAuth.create({
 			data: { iv, cipherText, lookupKey },
 		}),
 	])
@@ -95,7 +95,7 @@ export async function login({ ctx, email, password }: LoginOptions) {
 	)
 
 	const promises = [
-		ctx.prisma.authentication.findFirst({ where: { lookupKey } }),
+		ctx.prisma.userAuth.findFirst({ where: { lookupKey } }),
 		ctx.prisma.user.findFirst({ where: { email } }),
 	] as const
 

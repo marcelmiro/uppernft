@@ -18,14 +18,18 @@ const isReadyAtom = atom(false)
 const userAtom = atom<User | null>(null)
 
 function handleRetry(
+	count: number,
 	error: TRPCClientErrorLike<AppRouter>,
 	supportedCodes: TRPC_ERROR_CODE_KEY[],
 	handleAbort?: () => boolean | void
 ) {
+	if (count >= 3) return false
+
 	if (error.message === 'Aborted') {
 		const res = handleAbort?.()
 		return typeof res === 'boolean' ? res : false
 	}
+
 	return !error.data?.code || !supportedCodes.includes(error.data.code)
 }
 
@@ -40,10 +44,15 @@ export function useAuth() {
 		onSettled() {
 			setIsReady(true)
 		},
-		retry(_count, e) {
-			return handleRetry(e, ['FORBIDDEN', 'UNAUTHORIZED'], function () {
-				setHasAborted(true)
-			})
+		retry(count, e) {
+			return handleRetry(
+				count,
+				e,
+				['FORBIDDEN', 'UNAUTHORIZED'],
+				function () {
+					setHasAborted(true)
+				}
+			)
 		},
 	})
 
@@ -65,7 +74,7 @@ const signupSchema = z.object({
 		.max(16, 'Username cannot exceed 16 characters')
 		.regex(
 			/^(?!.*[._]{2})(?!.*\.$)(?!\..*$)[a-zA-Z0-9._]+$/,
-			'Username only allows alphanumeric characters and symbols (._)'
+			'Username can only contain alphanumeric characters and symbols (._)'
 		),
 	password: z
 		.string()
@@ -87,8 +96,8 @@ export function useSignup(options?: UseTRPCMutationOptions<'auth.signup'>) {
 			sidStore.set(data.sessionToken)
 			setUser(data.user)
 		},
-		retry(_count, e) {
-			return handleRetry(e, ['BAD_REQUEST'])
+		retry(count, e) {
+			return handleRetry(count, e, ['BAD_REQUEST'])
 		},
 	})
 
@@ -117,8 +126,8 @@ export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
 			sidStore.set(data.sessionToken)
 			setUser(data.user)
 		},
-		retry(_count, e) {
-			return handleRetry(e, ['NOT_FOUND'])
+		retry(count, e) {
+			return handleRetry(count, e, ['NOT_FOUND'])
 		},
 	})
 
@@ -133,6 +142,9 @@ export function useLogout(options?: UseMutationOptions) {
 		onSuccess(data, variables, context) {
 			options?.onSuccess?.(data, variables, context)
 			setUser(null)
+		},
+		retry(count) {
+			return count < 5
 		},
 	})
 

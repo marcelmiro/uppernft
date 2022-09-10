@@ -12,12 +12,6 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Authentication {
-    lookupKey  String @id @unique
-    iv         String
-    cipherText String
-}
-
 model User {
     id            Int      @id @default(autoincrement())
     email         String   @unique
@@ -26,7 +20,15 @@ model User {
     sessionId     String   @unique
     items         Item[]
     createdAt     DateTime @default(now())
-    updatedAt     DateTime @default(now()) @updatedAt
+    updatedAt     DateTime @updatedAt
+}
+
+model UserAuth {
+    lookupKey  String   @id
+    iv         String
+    cipherText String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }
 
 model ItemModel {
@@ -35,14 +37,16 @@ model ItemModel {
     name         String
     components   Components @relation(fields: [componentsId], references: [id])
     componentsId Int        @unique
-    Item         Item[]
+    items        Item[]
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
 }
 
 model Item {
     id           Int        @id @default(autoincrement())
     tokenId      Int        @unique
-    modelId      Int
     model        ItemModel  @relation(fields: [modelId], references: [id])
+    modelId      Int
     serialNumber String     @unique
     isStolen     Boolean    @default(false)
     owner        User       @relation(fields: [ownerId], references: [id])
@@ -75,14 +79,14 @@ model Components {
     id             Int        @id @default(autoincrement())
     frame          String
     fork           String
-    rearDerailleur String
-    brakes         String
-    crankset       String
-    shifters       String
-    handlebar      String
-    seat           String
-    wheelset       String
-    tires          String
+    rearDerailleur String?
+    brakes         String?
+    crankset       String?
+    shifters       String?
+    handlebar      String?
+    seat           String?
+    wheelset       String?
+    tires          String?
     Item           Item?
     ItemModel      ItemModel?
     createdAt      DateTime   @default(now())

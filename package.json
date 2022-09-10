@@ -19,6 +19,9 @@
     "clean": "cmd.exe /c \"@for /d /r . %d in (node_modules) do @if exist %d (echo %d && rd %d /s /q)\" && del .\\yarn.lock",
     "postinstall": "prisma generate && patch-package"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "workspaces": {
     "packages": [
       "packages/*"
@@ -33,11 +36,12 @@
   },
   "author": "Marcel Miro <marcelmiro1@hotmail.com>",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "@prisma/client": "^4.3.1",
     "concurrently": "^7.4.0",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0",
-    "prisma": "^4.3.1"
+    "prisma": "^4.3.1",
+    "ts-node": "^10.9.1"
   }
 }
