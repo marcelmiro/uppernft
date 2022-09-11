@@ -2,13 +2,14 @@
  * Learn more about using TypeScript with React Navigation:
  * https://reactnavigation.org/docs/typescript/
  */
-
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import {
 	CompositeScreenProps,
 	NavigatorScreenParams,
 } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+
+import { inferQueryOutput } from '@/utils/trpc'
 
 declare global {
 	namespace ReactNavigation {
@@ -39,13 +40,20 @@ export type AuthTabScreenProps<Screen extends keyof AuthTabParamList> =
 		NativeStackScreenProps<RootStackParamList>
 	>
 
+type BaseItem = inferQueryOutput<'user.items'>[number]
+type ItemModel = Omit<BaseItem['model'], 'createdAt' | 'updatedAt'>
+type Item = Omit<
+	Omit<BaseItem, 'model'> & { model: ItemModel },
+	'createdAt' | 'updatedAt'
+>
+
 export type MainStackParamList = {
 	Home: undefined
 	Account: undefined
 	UsernameChange: { username: string }
 
 	BikeRegister: NavigatorScreenParams<BikeRegisterStackParamList>
-	BikeMenu: { id: string; name: string; imageUri: string; isStolen: boolean }
+	BikeMenu: Item
 	BikeOverview: { id: string }
 	BikeActivity: { id: string }
 	BikeTransfer: NavigatorScreenParams<BikeTransferStackParamList>

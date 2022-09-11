@@ -92,29 +92,13 @@ export const authRouter = createRouter()
 	.query('verify', {
 		async resolve({ ctx }) {
 			try {
-				const token = ctx.req?.headers.authorization
-				const sessionToken = token?.split('Bearer ')?.[1]
+				const user = await validateSession(ctx)
 
-				if (!sessionToken)
-					throw new TRPCError({
-						code: 'FORBIDDEN',
-						message: 'Session Id is required',
-					})
-
-				const user = await validateSession({ ctx, sessionToken })
-
-				if (!user)
-					throw new TRPCError({
-						code: 'UNAUTHORIZED',
-						message: 'Invalid user',
-					})
-
-				// const { entropy } = user
-				// const wallet = await generateWalletFromEntropy(entropy)
+				// const wallet = await generateWalletFromEntropy(user.entropy)
 				// return { wallet }
 
-				const res = { email: user.email, username: user.username }
-				return res
+				const { email, username } = user
+				return { email, username }
 			} catch (e) {
 				if (e instanceof TRPCError) throw e
 				throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })

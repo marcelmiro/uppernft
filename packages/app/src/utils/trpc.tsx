@@ -18,7 +18,7 @@ const TIMEOUT = 20_000
 
 export const trpc = createReactQueryHooks<AppRouter>()
 
-export const queryClient = new QueryClient()
+const queryClient = new QueryClient()
 
 function getApiUrl() {
 	const url = Constants.manifest?.extra?.API_URL as string | undefined

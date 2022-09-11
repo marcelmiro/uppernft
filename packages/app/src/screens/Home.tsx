@@ -1,92 +1,146 @@
+import { useState } from 'react'
 import {
 	StyleSheet,
 	Pressable,
 	TextInput,
 	Image,
+	ActivityIndicator,
+	RefreshControl,
+	FlatList,
 	ScrollView,
 } from 'react-native'
 
 import { MainStackScreenProps } from '@/navigation/types'
 import Colors from '@/constants/Colors'
+import { trpc, inferQueryOutput } from '@/utils/trpc'
 import { Text, View, Button, layoutStyle } from '@/components/Themed'
 import IconAccount from '@/icons/profile.svg'
 import IconTray from '@/icons/tray.svg'
 
-interface Item {
-	id: string
-	name: string
-	imageUri: string
-	isStolen: boolean
+type Item = inferQueryOutput<'user.items'>[number]
+
+interface EmptyViewProps {
+	refreshControlProps: RefreshControl['props']
 }
 
 interface PopulatedViewProps {
 	items: Item[]
-	navigation: MainStackScreenProps<'Home'>['navigation']
+	onItemPress(item: Item): void
+	refreshControlProps: RefreshControl['props']
 }
 
-const isEmpty = false
-
-const bikes: Item[] = [
-	{
-		id: 'HP59218BM3N7',
-		name: 'Spark RC SL EVO AXS',
-		imageUri: 'https://i.imgur.com/jtj2sHj.png',
-		isStolen: false,
-	},
-	{
-		id: 'C31151F82NS1',
-		name: "Quick CX Women's 1",
-		imageUri: 'https://i.imgur.com/GM1MJOt.png',
-		isStolen: true,
-	},
-]
-
-function EmptyView() {
+function LoadingView() {
 	return (
-		<View style={styles.emptyContainer}>
-			<IconTray {...styles.emptyIcon} />
-
-			<Text style={styles.emptyTitle}>You have no registered bikes</Text>
-
-			<Text style={styles.emptySubtitle}>
-				Register a bike by clicking the button below. If you wish to
-				learn more about this app, you can find our guides in your
-				account page.
-			</Text>
+		<View style={styles.loaderContainer}>
+			<ActivityIndicator
+				size="large"
+				color={Colors.accent}
+				style={styles.loader}
+			/>
 		</View>
 	)
 }
 
-function PopulatedView({ items, navigation }: PopulatedViewProps) {
+function EmptyView({ refreshControlProps }: EmptyViewProps) {
 	return (
-		<ScrollView
+		<RefreshControl
+			{...refreshControlProps}
+			style={[styles.emptyContainer, refreshControlProps.style]}
+		>
+			<ScrollView
+				style={styles.fullScreen}
+				contentContainerStyle={styles.emptyContent}
+			>
+				<IconTray {...styles.emptyIcon} />
+
+				<Text style={styles.emptyTitle}>
+					You have no registered bikes
+				</Text>
+
+				<Text style={styles.emptySubtitle}>
+					Register a bike by clicking the button below. If you wish to
+					learn more about this app, you can find our guides in your
+					account page.
+				</Text>
+			</ScrollView>
+		</RefreshControl>
+	)
+}
+
+function PopulatedView({
+	items,
+	onItemPress,
+	refreshControlProps,
+}: PopulatedViewProps) {
+	function Item(item: Item) {
+		return (
+			<Pressable
+				onPress={() => onItemPress(item)}
+				style={({ pressed }) => [
+					styles.itemContainer,
+					pressed && styles.itemContainerPressed,
+				]}
+				key={item.id}
+			>
+				<Image
+					style={styles.itemImage}
+					source={{ uri: item.model.smallImageUri }}
+				/>
+				<View style={{ flex: 1 }}>
+					<Text style={styles.itemTitle}>{item.model.name}</Text>
+					<Text style={styles.itemSubtitle}>{item.serialNumber}</Text>
+				</View>
+			</Pressable>
+		)
+	}
+
+	return (
+		<FlatList
+			data={items}
+			renderItem={({ item }) => <Item {...item} />}
+			keyExtractor={(item) => item.serialNumber}
+			refreshControl={<RefreshControl {...refreshControlProps} />}
 			style={styles.contentWrapper}
 			contentContainerStyle={styles.content}
-		>
-			{items.map((bike) => (
-				<Pressable
-					onPress={() => navigation.navigate('BikeMenu', bike)}
-					style={({ pressed }) => [
-						styles.itemContainer,
-						pressed && styles.itemContainerPressed,
-					]}
-					key={bike.id}
-				>
-					<Image
-						style={styles.itemImage}
-						source={{ uri: bike.imageUri }}
-					/>
-					<View style={{ flex: 1 }}>
-						<Text style={styles.itemTitle}>{bike.name}</Text>
-						<Text style={styles.itemSubtitle}>{bike.id}</Text>
-					</View>
-				</Pressable>
-			))}
-		</ScrollView>
+		/>
 	)
 }
 
 export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
+	const [isRefreshing, setIsRefreshing] = useState(false)
+
+	const { data, isLoading, isFetching, error, refetch } = trpc.useQuery(
+		['user.items'],
+		{
+			onSettled() {
+				setIsRefreshing(false)
+			},
+		}
+	)
+
+	const refreshControlProps: RefreshControl['props'] = {
+		refreshing: isRefreshing && isFetching,
+		onRefresh() {
+			if (isRefreshing) return
+			setIsRefreshing(true)
+			refetch()
+		},
+	}
+
+	function navigateItem(item: Item) {
+		const {
+			createdAt: _createdAt,
+			updatedAt: _updatedAt,
+			...model
+		} = item.model
+		const {
+			createdAt: __createdAt,
+			updatedAt: __updatedAt,
+			...restItem
+		} = item
+		navigation.navigate('BikeMenu', { ...restItem, model })
+	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -100,10 +154,16 @@ export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 				/>
 			</View>
 
-			{isEmpty ? (
-				<EmptyView />
+			{isLoading ? (
+				<LoadingView />
+			) : !data || data.length === 0 ? (
+				<EmptyView refreshControlProps={refreshControlProps} />
 			) : (
-				<PopulatedView items={bikes} navigation={navigation} />
+				<PopulatedView
+					items={data}
+					onItemPress={navigateItem}
+					refreshControlProps={refreshControlProps}
+				/>
 			)}
 
 			<Button
@@ -120,6 +180,10 @@ export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 }
 
 const styles = StyleSheet.create({
+	fullScreen: {
+		width: '100%',
+		flex: 1,
+	},
 	container: {
 		...layoutStyle,
 		marginBottom: 8,
@@ -144,12 +208,25 @@ const styles = StyleSheet.create({
 		color: Colors.primary,
 		fontSize: 14,
 	},
-	emptyContainer: {
-		maxWidth: 290,
-		alignSelf: 'center',
-		alignItems: 'center',
-		justifyContent: 'center',
+	loaderContainer: {
 		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	loader: {
+		marginBottom: '10%',
+	},
+	emptyContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyContent: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignSelf: 'center',
+		maxWidth: 290,
 		paddingBottom: '10%',
 	},
 	emptyIcon: {

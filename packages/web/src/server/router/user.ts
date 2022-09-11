@@ -3,27 +3,22 @@ import { TRPCError } from '@trpc/server'
 import { createRouter } from './context'
 import { validateSession } from '../../lib/auth'
 
-export const userRouter = createRouter().query('me', {
+export const userRouter = createRouter().query('items', {
 	async resolve({ ctx }) {
-		const token = ctx.req?.headers.authorization
-		const sessionToken = token?.split('Bearer ')?.[1]
+		try {
+			const user = await validateSession(ctx)
 
-		if (!sessionToken)
-			throw new TRPCError({
-				code: 'FORBIDDEN',
-				message: 'Session Id is required',
+			const items = await ctx.prisma.item.findMany({
+				where: { ownerId: user.id },
+				include: { model: true },
 			})
 
-		const user = await validateSession({ ctx, sessionToken })
+			// await new Promise((resolve) => setTimeout(resolve, 5000))
 
-		if (!user)
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Invalid user',
-			})
-
-		const { id, sessionId, entropy, ...restUser } = user
-
-		return restUser
+			return items
+		} catch (e) {
+			if (e instanceof TRPCError) throw e
+			throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+		}
 	},
 })

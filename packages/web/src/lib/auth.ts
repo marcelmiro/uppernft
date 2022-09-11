@@ -4,6 +4,8 @@ import {
 	getPlatformCreateKey,
 } from '@audius/hedgehog/dist/index'
 import { hash, compare } from 'bcrypt'
+import { TRPCError } from '@trpc/server'
+
 import type { Context } from '../server/router/context'
 
 interface CreateWalletObjOptions {
@@ -22,11 +24,6 @@ interface LoginOptions {
 	ctx: Context
 	email: string
 	password: string
-}
-
-interface ValidateSessionOptions {
-	ctx: Context
-	sessionToken: string
 }
 
 const PATH = "m/44'/60'/0'/0/0"
@@ -115,19 +112,30 @@ export async function login({ ctx, email, password }: LoginOptions) {
 	return { entropy, sessionToken, user: userRes }
 }
 
-export async function validateSession({
-	ctx,
-	sessionToken,
-}: ValidateSessionOptions) {
+export async function validateSession(ctx: Context) {
+	const token = ctx.req?.headers.authorization
+	const sessionToken = token?.split('Bearer ')?.[1]
+
+	if (!sessionToken)
+		throw new TRPCError({
+			code: 'FORBIDDEN',
+			message: 'Session Id is required',
+		})
+
 	const splitIndex = sessionToken.lastIndexOf('.')
 	const email = sessionToken.slice(0, splitIndex)
 	const entropy = sessionToken.slice(splitIndex + 1)
 
 	const user = await ctx.prisma.user.findFirst({ where: { email } })
-	if (!user) return null
+	const isValid = !!user && (await compare(entropy, user.sessionId))
 
-	const isValid = await compare(entropy, user.sessionId)
-	return isValid ? { ...user, entropy } : null
+	if (!isValid)
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'Invalid user',
+		})
+
+	return { ...user, entropy }
 }
 
 export function generateWalletFromEntropy(entropy: string) {

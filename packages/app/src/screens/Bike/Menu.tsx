@@ -102,7 +102,11 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 	const {
 		navigation,
 		route: {
-			params: { id, name, imageUri, isStolen },
+			params: {
+				model: { name, imageUri },
+				serialNumber: id,
+				isStolen,
+			},
 		},
 	} = props
 

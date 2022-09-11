@@ -11,6 +11,8 @@ const itemModels: Prisma.ItemModelCreateInput[] = [
 	{
 		code: '401',
 		name: 'Spark RC SL EVO AXS',
+		imageUri: 'https://i.imgur.com/MUe921m.png',
+		smallImageUri: 'https://i.imgur.com/jtj2sHj.png',
 		components: {
 			create: {
 				frame: 'Spark RC Carbon HMX SL',
@@ -30,6 +32,8 @@ const itemModels: Prisma.ItemModelCreateInput[] = [
 	{
 		code: '402',
 		name: "Quick CX Women's 1",
+		imageUri: 'https://i.imgur.com/NcCkc5R.png',
+		smallImageUri: 'https://i.imgur.com/GM1MJOt.png',
 		components: {
 			create: {
 				frame: 'SmartForm C3 Alloy, SAVE, tapered head tube, Straightshot hidden cable routing, flat mount disc, rack/fender mounts, 360° reflectivity',
@@ -54,7 +58,8 @@ function populate() {
 }
 
 async function main() {
-    return populate()
+	// return prisma.components.create({ data: itemModels[0].components.create })
+	// return populate()
 }
 
 main()
