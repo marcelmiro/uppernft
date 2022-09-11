@@ -95,7 +95,7 @@ export function parseErrorMessage(
 	} catch (e) {}
 
 	if (UNSUPPORTED_ERROR_MESSAGES.includes(message))
-		message = 'An unexpected error occurred - Please try again later'
+		message = 'An unexpected error occurred, please try again later'
 
 	return message
 }

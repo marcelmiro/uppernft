@@ -137,15 +137,14 @@ export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
 export function useLogout(options?: UseMutationOptions) {
 	const [, setUser] = useAtom(userAtom)
 
-	// TODO: Delete "user.items" data on logout
-	// const utils = trpc.useContext()
+	const { queryClient } = trpc.useContext()
 
 	const { mutate, isLoading, error } = useMutation(sidStore.delete, {
 		...options,
 		onSuccess(data, variables, context) {
 			options?.onSuccess?.(data, variables, context)
 			setUser(null)
-			// utils.invalidateQueries(['user.items'])
+			queryClient.removeQueries(['user.items'])
 		},
 		retry(count) {
 			return count < 5

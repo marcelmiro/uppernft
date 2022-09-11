@@ -29,9 +29,9 @@ export default handleCors(
 		router: appRouter,
 		createContext,
 		onError({ error }) {
-			if (error.code === 'INTERNAL_SERVER_ERROR' && !error.message) {
+			if (error.code === 'INTERNAL_SERVER_ERROR') {
 				error.message =
-					'An unexpected error occurred - Please try again later'
+					'An unexpected error occurred, please try again later'
 			}
 		},
 	})

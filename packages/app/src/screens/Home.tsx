@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import {
 	StyleSheet,
 	Pressable,
@@ -109,13 +109,23 @@ function PopulatedView({
 export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 	const [isRefreshing, setIsRefreshing] = useState(false)
 
-	const { data, isLoading, isFetching, error, refetch } = trpc.useQuery(
+	const { data, isLoading, isFetching, refetch } = trpc.useQuery(
 		['user.items'],
 		{
 			onSettled() {
 				setIsRefreshing(false)
 			},
 		}
+	)
+
+	const sortedData = useMemo(
+		() =>
+			data?.sort((a, b) => {
+				if (a.model.name < b.model.name) return -1
+				if (a.model.name > b.model.name) return 1
+				return 0
+			}),
+		[data]
 	)
 
 	const refreshControlProps: RefreshControl['props'] = {
@@ -156,11 +166,11 @@ export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 
 			{isLoading ? (
 				<LoadingView />
-			) : !data || data.length === 0 ? (
+			) : !sortedData || sortedData.length === 0 ? (
 				<EmptyView refreshControlProps={refreshControlProps} />
 			) : (
 				<PopulatedView
-					items={data}
+					items={sortedData}
 					onItemPress={navigateItem}
 					refreshControlProps={refreshControlProps}
 				/>

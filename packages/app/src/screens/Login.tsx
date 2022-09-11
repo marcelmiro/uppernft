@@ -35,7 +35,7 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 	})
 
 	function handleLogin() {
-		return login({ email, password })
+		return login({ email: email.trim(), password: password.trim() })
 	}
 
 	useEffect(() => {

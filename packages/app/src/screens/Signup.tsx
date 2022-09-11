@@ -37,7 +37,11 @@ export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 	})
 
 	function handleSignup() {
-		return signup({ email, username, password })
+		return signup({
+			email: email.trim(),
+			username: username.trim(),
+			password: password.trim(),
+		})
 	}
 
 	useEffect(() => {
