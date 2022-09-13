@@ -183,6 +183,15 @@ export const itemRouter = createRouter()
 					model: { connect: { id: model.id } },
 					owner: { connect: { id: user.id } },
 					components: { create: components },
+					activities: {
+						create: [
+							{
+								type: 'MINT',
+								externalLink:
+									'https://rinkeby.etherscan.io/tx/0x2fcb9255113e8980525f6edb2fa28551a95b0d5d4ca3d4010aaec466c948206f',
+							},
+						],
+					},
 				},
 			})
 		},
