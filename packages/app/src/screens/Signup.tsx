@@ -75,7 +75,7 @@ export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 						// secureTextEntry
 					/>
 
-					{!!error && <ErrorMessage>{error}</ErrorMessage>}
+					<ErrorMessage>{error}</ErrorMessage>
 				</View>
 
 				<View>

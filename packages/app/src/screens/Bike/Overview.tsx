@@ -1,74 +1,72 @@
+import { useMemo } from 'react'
 import {
 	StyleSheet,
 	ActivityIndicator,
-	ScrollView,
 	Pressable,
+	FlatList,
+	ScrollView,
 } from 'react-native'
 
 import Colors from '@/constants/Colors'
 import { MainStackScreenProps } from '@/navigation/types'
+import { inferQueryOutput, trpc } from '@/utils/trpc'
 import { View, Text, layoutStyle } from '@/components/Themed'
 import Header from '@/components/Header'
 
 interface ItemProps {
 	label: string
 	value: string
-	isEditable?: boolean
 }
 
-const isLoading = false
-
-const data: ItemProps[] = [
-	{ label: 'Model name', value: 'Spark RC SL EVO AXS' },
-	{ label: 'Model code', value: '286249' },
-	{ label: 'Serial number', value: 'HP59218BM3N7' },
-	{
-		label: 'Fork',
-		value: 'FOX 34 SC Float Factory Air / Kashima FIT4',
-		isEditable: true,
-	},
-	{
-		label: 'Rear shock',
-		value: 'FOX NUDE 5 Factory EVOL Trunnion SCOTT custom w. travel / geo adj.',
-	},
-	{ label: 'Remote system', value: 'SCOTT TwinLoc 2' },
-	{ label: 'Rear derailleur', value: 'SRAM XX1 Eagle AXS' },
-	{ label: 'Shifters', value: 'SRAM Eagle AXS Rocker Controller' },
-	{
-		label: 'Crankset',
-		value: 'SRAM XX1 Eagle AXS Carbon crankarm / Power Meter DUB / 55mm CL / 32T',
-	},
-	{ label: 'Chain', value: 'SRAM CN XX1 Eagle', isEditable: true },
-	{ label: 'Cassette', value: 'SRAM XX1 XG1299 / 10-52 T' },
-	{ label: 'Brakes', value: 'Shimano XTR M9100 Disc', isEditable: true },
-	{ label: 'Rotor', value: 'Shimano RT-MT900 CL / 180/F and 160/R' },
-	{
-		label: 'Handlebar',
-		value: 'Syncros Fraser iC SL XC Carbon',
-		isEditable: true,
-	},
-	{ label: 'Seat', value: 'Syncros Belcarra SL Regular 1.0' },
-	{
-		label: 'Headset',
-		value: 'Syncros - Acros Angle adjust & Cable Routing HS System',
-	},
-	{ label: 'Wheelset', value: 'Syncros Silverton SL2-30 CL full Carbon' },
-	{
-		label: 'Front tire',
-		value: 'Maxxis Rekon Race / 29x2.4" / 120TPI Foldable Bead',
-	},
-	{
-		label: 'Rear tire',
-		value: 'Maxxis Rekon Race / 29x2.4" / 120TPI Foldable Bead',
-	},
+const IMMUTABLE_COMPONENTS = [
+	'model name',
+	'model code',
+	'serial number',
+	'frame',
 ]
 
-function Item({ label, value, isEditable = false }: ItemProps) {
+function propToLabel(text: string) {
+	text = text.replace(/([A-Z])/g, ' $1')
+	return text[0].toUpperCase() + text.slice(1).toLowerCase()
+}
+
+function getComponents(data: inferQueryOutput<'item.overview'>) {
+	const { id, createdAt, updatedAt, ...components } = data.components
+
+	const items: ItemProps[] = [
+		{
+			label: 'Model name',
+			value: data.model.name,
+		},
+		{
+			label: 'Model code',
+			value: data.model.code,
+		},
+		{
+			label: 'Serial number',
+			value: data.serialNumber,
+		},
+	]
+
+	for (const [key, value] of Object.entries(components)) {
+		if (!value) continue
+		items.push({ label: propToLabel(key), value })
+	}
+
+	return items
+}
+
+function Item({ label, value }: ItemProps) {
+	const isComponentEditable = !IMMUTABLE_COMPONENTS.includes(
+		label.toLowerCase()
+	)
+
 	return (
 		<View style={styles.item}>
 			<Text style={styles.itemLabel}>{label}</Text>
 			<Text style={styles.itemValue}>{value}</Text>
-			{isEditable && (
+
+			{isComponentEditable && (
 				<Pressable onPress={() => {}} style={styles.itemButton}>
 					<Text style={styles.itemButtonText}>Change</Text>
 				</Pressable>
@@ -80,7 +78,20 @@ function Item({ label, value, isEditable = false }: ItemProps) {
 export default function BikeOverview(
 	props: MainStackScreenProps<'BikeOverview'>
 ) {
+	const { serialNumber } = props.route.params
+
+	const { data, isLoading } = trpc.useQuery(
+		['item.overview', { serialNumber }],
+		{ refetchOnMount: false }
+	)
+
+	const components = useMemo(() => {
+		return data ? getComponents(data) : null
+	}, [data])
+
 	const header = <Header {...props} title="Overview" />
+
+	if (!isLoading && !components) return props.navigation.goBack()
 
 	if (isLoading)
 		return (
@@ -98,17 +109,25 @@ export default function BikeOverview(
 		)
 
 	return (
-		<View style={{ width: '100%', flex: 1 }}>
+		<>
 			<View style={styles.headerContainer}>{header}</View>
 
-			<ScrollView style={styles.container}>
-				<View style={styles.content}>
-					{data.map((item) => (
-						<Item {...item} key={item.label} />
-					))}
-				</View>
+			<ScrollView style={{ width: '100%', flex: 1 }}>
+				<ScrollView
+					horizontal
+					style={{ width: '100%', flex: 1 }}
+					contentContainerStyle={{ width: '100%' }}
+				>
+					<FlatList
+						data={components}
+						renderItem={({ item }) => <Item {...item} />}
+						keyExtractor={(item) => item.label}
+						style={styles.container}
+						contentContainerStyle={styles.content}
+					/>
+				</ScrollView>
 			</ScrollView>
-		</View>
+		</>
 	)
 }
 
@@ -130,10 +149,11 @@ const styles = StyleSheet.create({
 		marginBottom: 24,
 	},
 	container: {
-		...layoutStyle,
-		marginTop: 0,
+		flex: 1,
+		marginBottom: layoutStyle.marginBottom,
 	},
 	content: {
+		marginHorizontal: layoutStyle.paddingHorizontal,
 		paddingVertical: 4,
 		paddingHorizontal: 16,
 		backgroundColor: Colors.primary0,

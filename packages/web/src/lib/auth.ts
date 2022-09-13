@@ -92,8 +92,8 @@ export async function login({ ctx, email, password }: LoginOptions) {
 	)
 
 	const promises = [
-		ctx.prisma.userAuth.findFirst({ where: { lookupKey } }),
-		ctx.prisma.user.findFirst({ where: { email } }),
+		ctx.prisma.userAuth.findUnique({ where: { lookupKey } }),
+		ctx.prisma.user.findUnique({ where: { email } }),
 	] as const
 
 	const [auth, user] = await Promise.all(promises)
@@ -126,7 +126,7 @@ export async function validateSession(ctx: Context) {
 	const email = sessionToken.slice(0, splitIndex)
 	const entropy = sessionToken.slice(splitIndex + 1)
 
-	const user = await ctx.prisma.user.findFirst({ where: { email } })
+	const user = await ctx.prisma.user.findUnique({ where: { email } })
 	const isValid = !!user && (await compare(entropy, user.sessionId))
 
 	if (!isValid)

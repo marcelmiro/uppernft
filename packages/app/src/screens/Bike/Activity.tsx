@@ -4,11 +4,15 @@ import {
 	ScrollView,
 	ActivityIndicator,
 	Pressable,
+	SectionList,
+	SectionListRenderItemInfo,
 } from 'react-native'
 import { SvgProps } from 'react-native-svg'
+import * as Linking from 'expo-linking'
 
 import Colors from '@/constants/Colors'
 import { MainStackScreenProps } from '@/navigation/types'
+import { inferQueryOutput, trpc } from '@/utils/trpc'
 import { View, Text, layoutStyle } from '@/components/Themed'
 import Header from '@/components/Header'
 import IconPlus from '@/icons/plus.svg'
@@ -17,52 +21,34 @@ import IconWrench from '@/icons/wrench.svg'
 import IconWrite from '@/icons/write.svg'
 import IconLink from '@/icons/link.svg'
 
-const isLoading = false
+const { useMemo } = React
 
-type ActivityType = 'Registration' | 'Transfer' | 'Repair' | 'Component change'
-
-interface Activity {
-	type: ActivityType
-	created_at: Date
-	url?: string
-}
+type Activity = inferQueryOutput<'item.activity'>['activities'][number]
 
 interface ItemProps {
-	date: string
-	activities: Activity[]
+	title: string
+	data: Activity[]
 }
 
-const data: Activity[] = [
-	{
-		type: 'Registration',
-		created_at: new Date(1656857870000),
-	},
-	{
-		type: 'Repair',
-		created_at: new Date(1659104270000),
-	},
-	{
-		type: 'Transfer',
-		created_at: new Date(1659104630000),
-	},
-	{
-		type: 'Component change',
-		created_at: new Date(),
-	},
-]
+const activityTypeToText: Record<Activity['type'], string> = {
+	MINT: 'Registration',
+	TRANSFER: 'Transfer',
+	REPAIR: 'Repair',
+	COMPONENT_CHANGE: 'Component change',
+}
 
-const activityTypeToIcon: Record<ActivityType, React.FC<SvgProps>> = {
-	Registration: IconPlus,
-	Transfer: IconArrowBidirectional,
-	Repair: IconWrench,
-	'Component change': IconWrite,
+const activityTypeToIcon: Record<Activity['type'], React.FC<SvgProps>> = {
+	MINT: IconPlus,
+	TRANSFER: IconArrowBidirectional,
+	REPAIR: IconWrench,
+	COMPONENT_CHANGE: IconWrite,
 }
 
 function sortActivitiesByDate(data: Activity[]) {
 	const activityByDate: Record<string, Activity[]> = {}
 
 	for (const activity of data) {
-		const date = activity.created_at
+		const date = activity.createdAt
 
 		const month = date.toLocaleString('en-US', { month: 'long' })
 		const dateString = `${month} ${date.getDate()}, ${date.getFullYear()}`
@@ -72,8 +58,8 @@ function sortActivitiesByDate(data: Activity[]) {
 	}
 
 	const sortedDates = Object.keys(activityByDate).sort((a, b) => {
-		const dateA = activityByDate[a]?.[0].created_at.getTime()
-		const dateB = activityByDate[b]?.[0].created_at.getTime()
+		const dateA = activityByDate[a]?.[0].createdAt.getTime()
+		const dateB = activityByDate[b]?.[0].createdAt.getTime()
 
 		if (!dateA) return 1
 		if (!dateB) return -1
@@ -81,97 +67,143 @@ function sortActivitiesByDate(data: Activity[]) {
 		return dateB - dateA
 	})
 
-	const sortedActivities = sortedDates
-		.map((date) => {
-			const activities = activityByDate[date]?.sort(
-				(a, b) => b.created_at.getTime() - a.created_at.getTime()
-			)
-			if (!activities) return
-			return { date, activities }
-		})
-		.filter(Boolean)
+	const sortedActivities: ItemProps[] = []
 
-	return sortedActivities as Array<{ date: string; activities: Activity[] }>
+	for (const date of sortedDates) {
+		const activities = activityByDate[date]?.sort(
+			(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+		)
+		if (!activities) continue
+		sortedActivities.push({ title: date, data: activities })
+	}
+
+	return sortedActivities
 }
 
-function Item({ date, activities }: ItemProps) {
+function SectionHeader({ title }: Pick<ItemProps, 'title'>) {
 	return (
-		<View style={styles.itemContainer}>
-			<Text style={styles.itemDate}>{date}</Text>
+		<View style={styles.sectionHeader}>
+			<Text style={styles.sectionTitle}>{title}</Text>
+		</View>
+	)
+}
 
-			<View style={styles.itemContent}>
-				{activities.map((activity) => {
-					const Icon = activityTypeToIcon[activity.type]
-					return (
-						<View
-							style={styles.activityContainer}
-							key={activity.created_at.getTime()}
-						>
-							<View style={styles.activityIconContainer}>
-								<Icon {...styles.activityIcon} />
-							</View>
+function Item({
+	item,
+	index,
+	section,
+}: SectionListRenderItemInfo<Activity, ItemProps>) {
+	const { type, createdAt, externalLink } = item
+	const Icon = activityTypeToIcon[type]
+	const isFirst = index === 0
+	const isLast = index === section.data.length - 1
 
-							<View style={styles.activityContent}>
-								<Text style={styles.activityTitle}>
-									{activity.type}
-								</Text>
-								<Text style={styles.activitySubtitle}>
-									{`${
-										activity.created_at
-											.toLocaleDateString('en-US', {
-												weekday: 'short',
-											})
-											.split(',')[0]
-									}, ${activity.created_at.toLocaleDateString(
-										'en-US',
-										{ month: 'short' }
-									)} ${activity.created_at.getDate()}`}
-								</Text>
-							</View>
+	return (
+		<>
+			{isFirst && <SectionHeader title={section.title} />}
 
-							<Pressable onPress={() => {}} hitSlop={32}>
-								<IconLink {...styles.activityLink} />
-							</Pressable>
-						</View>
-					)
-				})}
+			<View
+				style={[
+					styles.activityContainer,
+					isFirst && styles.firstActivityContainer,
+					isLast && styles.lastActivityContainer,
+				]}
+			>
+				<View style={styles.activityIconContainer}>
+					<Icon {...styles.activityIcon} />
+				</View>
+
+				<View style={styles.activityContent}>
+					<Text style={styles.activityTitle}>
+						{activityTypeToText[type]}
+					</Text>
+					<Text style={styles.activitySubtitle}>
+						{`${
+							createdAt
+								.toLocaleDateString('en-US', {
+									weekday: 'short',
+								})
+								.split(',')[0]
+						}, ${createdAt.toLocaleDateString('en-US', {
+							month: 'short',
+						})} ${createdAt.getDate()}`}
+					</Text>
+				</View>
+
+				{!!externalLink && (
+					<Pressable
+						onPress={() => Linking.openURL(externalLink)}
+						hitSlop={16}
+					>
+						<IconLink {...styles.activityLink} />
+					</Pressable>
+				)}
+			</View>
+		</>
+	)
+}
+
+function LoadingView({ header }: { header: JSX.Element }) {
+	return (
+		<View style={styles.loaderWrapper}>
+			{header}
+
+			<View style={styles.loaderContainer}>
+				<ActivityIndicator
+					size="large"
+					color={Colors.accent}
+					style={styles.loader}
+				/>
 			</View>
 		</View>
 	)
 }
 
+function EmptyView() {
+	return <Text style={styles.emptyTitle}>This bike has no activity yet.</Text>
+}
+
 export default function BikeActivity(
 	props: MainStackScreenProps<'BikeActivity'>
 ) {
+	const { serialNumber } = props.route.params
+
+	const { data, isLoading } = trpc.useQuery(
+		['item.activity', { serialNumber }],
+		{ refetchOnMount: false }
+	)
+
+	const activities = useMemo(
+		() => (data ? sortActivitiesByDate(data.activities) : []),
+		[data]
+	)
+
 	const header = <Header {...props} title="Activity" />
 
-	if (isLoading)
-		return (
-			<View style={styles.loaderWrapper}>
-				{header}
+	if (!isLoading && !activities) return props.navigation.goBack()
 
-				<View style={styles.loaderContainer}>
-					<ActivityIndicator
-						size="large"
-						color={Colors.accent}
-						style={styles.loader}
-					/>
-				</View>
-			</View>
-		)
+	if (isLoading) return <LoadingView header={header} />
 
 	return (
-		<View style={{ width: '100%' }}>
+		<>
 			<View style={styles.headerContainer}>{header}</View>
 
-			<ScrollView>
-				<View style={styles.container}>
-					{sortActivitiesByDate(data).map((datum) => (
-						<Item {...datum} key={datum.date} />
-					))}
-				</View>
+			<ScrollView style={{ width: '100%', flex: 1 }}>
+				<ScrollView
+					horizontal
+					style={{ width: '100%', flex: 1 }}
+					contentContainerStyle={{ width: '100%' }}
+				>
+					<SectionList
+						sections={activities}
+						renderItem={Item}
+						keyExtractor={(item) => String(item.id)}
+						contentContainerStyle={styles.content}
+						ListEmptyComponent={EmptyView}
+					/>
+				</ScrollView>
 			</ScrollView>
-		</View>
+		</>
 	)
 }
 
@@ -190,29 +222,42 @@ const styles = StyleSheet.create({
 	},
 	headerContainer: {
 		...layoutStyle,
+		marginBottom: 0,
+	},
+	content: {
+		flex: 1,
+		paddingHorizontal: layoutStyle.paddingHorizontal,
+		marginBottom: layoutStyle.marginBottom,
+	},
+	emptyTitle: {
+		marginTop: 32,
+		fontSize: 16,
+		color: Colors.primary400,
+	},
+	sectionHeader: {
+		marginTop: 32,
 		marginBottom: 16,
 	},
-	container: {
-		paddingHorizontal: layoutStyle.paddingHorizontal,
-	},
-	itemContainer: {
-		marginVertical: 16,
-	},
-	itemDate: {
+	sectionTitle: {
 		fontWeight: '500',
 		fontSize: 14,
 		color: Colors.primary400,
-		marginBottom: 16,
-	},
-	itemContent: {
-		backgroundColor: Colors.primary0,
-		borderRadius: 12,
-		paddingHorizontal: 16,
-		paddingVertical: 4,
 	},
 	activityContainer: {
-		marginVertical: 12,
+		paddingVertical: 12,
+		paddingHorizontal: 16,
 		flexDirection: 'row',
+		backgroundColor: Colors.primary0,
+	},
+	firstActivityContainer: {
+		paddingTop: 16,
+		borderTopLeftRadius: 12,
+		borderTopRightRadius: 12,
+	},
+	lastActivityContainer: {
+		paddingBottom: 16,
+		borderBottomLeftRadius: 12,
+		borderBottomRightRadius: 12,
 	},
 	activityIconContainer: {
 		width: 42,

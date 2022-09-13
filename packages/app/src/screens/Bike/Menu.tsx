@@ -11,6 +11,7 @@ import { SvgProps } from 'react-native-svg'
 
 import Colors from '@/constants/Colors'
 import { MainStackScreenProps } from '@/navigation/types'
+import { trpc } from '@/utils/trpc'
 import { View, Text, Button, layoutStyle } from '@/components/Themed'
 import Header from '@/components/Header'
 import Modal from '@/components/Modal'
@@ -96,30 +97,40 @@ function TheftInfoModal({ show, handleClose, onPress }: TheftInfoModalProps) {
 }
 
 export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
+	const navigation = props.navigation
+	const {
+		serialNumber,
+		model: { name, imageUri },
+	} = props.route.params
+
+	const [isStolen, setIsStolen] = useState(props.route.params.isStolen)
 	const [showTheftModal, setShowTheftModal] = useState(false)
 	const [showTheftInfoModal, setShowTheftInfoModal] = useState(false)
 
-	const {
-		navigation,
-		route: {
-			params: {
-				model: { name, imageUri },
-				serialNumber: id,
-				isStolen,
-			},
-		},
-	} = props
-
 	const { width } = Dimensions.get('window')
-
 	const imageMinHeight = parseInt(String(width / 2))
 
-	function reportTheft() {
-		setShowTheftModal(false)
-	}
+	const { setQueryData } = trpc.useContext()
 
-	function withdrawTheftReport() {
-		setShowTheftModal(false)
+	const { mutate: mutateStolen } = trpc.useMutation(['item.stolen'], {
+		onSuccess({ isStolen }) {
+			setIsStolen(isStolen)
+			setShowTheftModal(false)
+			setQueryData(['user.items'], (items) => {
+				if (!items) return []
+				return items.map((item) => ({
+					...item,
+					isStolen:
+						item.serialNumber === serialNumber
+							? isStolen
+							: item.isStolen,
+				}))
+			})
+		},
+	})
+
+	function toggleStolen() {
+		mutateStolen({ serialNumber, isStolen: !isStolen })
 	}
 
 	function share() {
@@ -132,7 +143,7 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 			<TheftModal
 				show={showTheftModal}
 				handleClose={() => setShowTheftModal(false)}
-				onPress={isStolen ? withdrawTheftReport : reportTheft}
+				onPress={toggleStolen}
 				isStolen={isStolen}
 			/>
 
@@ -174,14 +185,16 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 			<ScrollView style={[styles.contentWrapper, { width }]}>
 				<View style={styles.content}>
 					<Text style={styles.title}>{name}</Text>
-					<Text style={styles.subtitle}>{id}</Text>
+					<Text style={styles.subtitle}>{serialNumber}</Text>
 
 					<Action
 						title="Overview"
 						desc="Show additional information"
 						icon={IconEye}
 						onPress={() =>
-							navigation.navigate('BikeOverview', { id })
+							navigation.navigate('BikeOverview', {
+								serialNumber,
+							})
 						}
 					/>
 
@@ -190,7 +203,9 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 						desc="Show the latest activity"
 						icon={IconActivity}
 						onPress={() =>
-							navigation.navigate('BikeActivity', { id })
+							navigation.navigate('BikeActivity', {
+								serialNumber,
+							})
 						}
 					/>
 
@@ -201,7 +216,7 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 						onPress={() =>
 							navigation.navigate('BikeTransfer', {
 								screen: 'TransferHome',
-								params: { id },
+								params: { serialNumber },
 							})
 						}
 					/>
@@ -227,7 +242,9 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 						desc="Show additional options"
 						icon={IconGear}
 						onPress={() =>
-							navigation.navigate('BikeSettings', { id })
+							navigation.navigate('BikeSettings', {
+								serialNumber,
+							})
 						}
 					/>
 				</View>

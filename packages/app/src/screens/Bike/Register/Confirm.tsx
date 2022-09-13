@@ -2,6 +2,7 @@ import { StyleSheet, Image, Dimensions } from 'react-native'
 
 import Colors from '@/constants/Colors'
 import { BikeRegisterStackScreenProps } from '@/navigation/types'
+import { trpc } from '@/utils/trpc'
 import {
 	View,
 	Text,
@@ -14,10 +15,20 @@ import Header from '@/components/Header'
 export default function BikeRegisterConfirm(
 	props: BikeRegisterStackScreenProps<'ConfirmRegister'>
 ) {
-	const { id, name, imageUri } = props.route.params
+	const { serialNumber, name, imageUri } = props.route.params
+
+	const { mutate: mutateRegister, isLoading } = trpc.useMutation(
+		['item.register'],
+		{
+			onSuccess() {
+				props.navigation.reset({
+					routes: [{ name: 'AfterRegisterInfo' }],
+				})
+			},
+		}
+	)
 
 	const { width } = Dimensions.get('window')
-
 	const imageHeight = parseInt(String(width / 1.8))
 
 	return (
@@ -33,7 +44,7 @@ export default function BikeRegisterConfirm(
 							resizeMode="cover"
 						/>
 						<Text style={styles.bikeTitle}>{name}</Text>
-						<Text style={styles.bikeSubtitle}>{id}</Text>
+						<Text style={styles.bikeSubtitle}>{serialNumber}</Text>
 					</View>
 
 					<Text style={styles.confirmText}>
@@ -43,11 +54,8 @@ export default function BikeRegisterConfirm(
 				</View>
 
 				<Button
-					onPress={() =>
-						props.navigation.reset({
-							routes: [{ name: 'AfterRegisterInfo' }],
-						})
-					}
+					onPress={() => mutateRegister({ serialNumber })}
+					isLoading={isLoading}
 				>
 					Confirm
 				</Button>

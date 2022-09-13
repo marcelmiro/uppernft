@@ -4,6 +4,7 @@ import { SvgProps } from 'react-native-svg'
 
 import Colors from '@/constants/Colors'
 import { MainStackScreenProps } from '@/navigation/types'
+import { trpc } from '@/utils/trpc'
 import { Text, View, layoutStyle } from '@/components/Themed'
 import Header from '@/components/Header'
 import IconReceipt from '@/icons/receipt.svg'
@@ -43,6 +44,20 @@ function Setting({ title, desc, icon: Icon, onPress, iconFill }: SettingProps) {
 export default function BikeSettings(
 	props: MainStackScreenProps<'BikeSettings'>
 ) {
+	const { serialNumber } = props.route.params
+
+	const { queryClient } = trpc.useContext()
+
+	const { mutate: mutateDelete, isLoading } = trpc.useMutation(
+		['item.delete'],
+		{
+			onSuccess() {
+				queryClient.removeQueries(['user.items'])
+				props.navigation.reset({ routes: [{ name: 'Home' }] })
+			},
+		}
+	)
+
 	return (
 		<View style={styles.wrapper}>
 			<Header {...props} style={styles.header} title="Settings" />
@@ -75,7 +90,7 @@ export default function BikeSettings(
 								title="Delete digital copy"
 								icon={IconBin}
 								iconFill={Colors.error}
-								onPress={() => {}}
+								onPress={() => mutateDelete({ serialNumber })}
 							/>
 						</View>
 					</View>

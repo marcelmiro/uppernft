@@ -60,7 +60,7 @@ export function Button({
 }: ButtonProps) {
 	return (
 		<Pressable
-			onPress={onPress}
+			onPress={isLoading ? null : onPress}
 			style={({ pressed }) => [
 				styles.button,
 				containerStyle,
@@ -109,6 +109,8 @@ export function TextLink({
 }
 
 export function ErrorMessage({ style, ...props }: DefaultText['props']) {
+	if (!props.children) return null
+
 	/**
 	 * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 	 */

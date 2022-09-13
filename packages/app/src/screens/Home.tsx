@@ -123,6 +123,8 @@ export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 			data?.sort((a, b) => {
 				if (a.model.name < b.model.name) return -1
 				if (a.model.name > b.model.name) return 1
+				if (a.serialNumber < b.serialNumber) return -1
+				if (a.serialNumber > b.serialNumber) return 1
 				return 0
 			}),
 		[data]

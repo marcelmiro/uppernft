@@ -46,7 +46,7 @@ model ItemModel {
 
 model Item {
     id           Int        @id @default(autoincrement())
-    tokenId      Int        @unique
+    // tokenId      Int        @unique
     model        ItemModel  @relation(fields: [modelId], references: [id])
     modelId      Int
     serialNumber String     @unique
@@ -72,7 +72,7 @@ model Activity {
     type         ActivityType
     item         Item         @relation(fields: [itemId], references: [id])
     itemId       Int
-    externalLink String
+    externalLink String?
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
 }
@@ -89,8 +89,8 @@ model Components {
     seat           String?
     wheelset       String?
     tires          String?
-    Item           Item?
-    ItemModel      ItemModel?
+    item           Item?
+    itemModel      ItemModel?
     createdAt      DateTime   @default(now())
     updatedAt      DateTime   @updatedAt
 }

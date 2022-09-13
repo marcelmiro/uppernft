@@ -54,10 +54,10 @@ export type MainStackParamList = {
 
 	BikeRegister: NavigatorScreenParams<BikeRegisterStackParamList>
 	BikeMenu: Item
-	BikeOverview: { id: string }
-	BikeActivity: { id: string }
+	BikeOverview: { serialNumber: string }
+	BikeActivity: { serialNumber: string }
 	BikeTransfer: NavigatorScreenParams<BikeTransferStackParamList>
-	BikeSettings: { id: string }
+	BikeSettings: { serialNumber: string }
 }
 
 export type MainStackScreenProps<Screen extends keyof MainStackParamList> =
@@ -69,7 +69,7 @@ export type MainStackScreenProps<Screen extends keyof MainStackParamList> =
 export type BikeRegisterStackParamList = {
 	RegisterHome: undefined
 	ManualRegister: undefined
-	ConfirmRegister: { id: string; name: string; imageUri: string }
+	ConfirmRegister: { serialNumber: string; name: string; imageUri: string }
 	AfterRegisterInfo: undefined
 }
 
@@ -84,7 +84,7 @@ export type BikeRegisterStackScreenProps<
 >
 
 export type BikeTransferStackParamList = {
-	TransferHome: { id: string }
+	TransferHome: { serialNumber: string }
 	BeforeTransferInfo: undefined
 	AuthorizeTransfer: undefined
 	AfterTransferInfo: undefined

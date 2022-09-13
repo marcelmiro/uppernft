@@ -20,7 +20,6 @@ export default function UsernameChange(
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
 	useEffect(() => {
-		if (!newUsername || username === newUsername) setIsButtonDisabled(true)
 		setIsButtonDisabled(!newUsername || username === newUsername)
 	}, [newUsername])
 

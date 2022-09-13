@@ -63,7 +63,7 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 						// secureTextEntry
 					/>
 
-					{!!error && <ErrorMessage>{error}</ErrorMessage>}
+					<ErrorMessage>{error}</ErrorMessage>
 
 					<TextLink style={styles.forgotPassword} onPress={() => {}}>
 						Forgot password?
