@@ -8,7 +8,7 @@ import Navigation from '@/navigation/index'
 function App() {
 	return (
 		<TRPCProvider>
-			<SafeAreaProvider style={{ flex: 1, width: '100%' }}>
+			<SafeAreaProvider style={{ width: '100%', flex: 1 }}>
 				<Navigation />
 				<StatusBar />
 			</SafeAreaProvider>

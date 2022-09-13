@@ -91,7 +91,10 @@ export default function BikeOverview(
 
 	const header = <Header {...props} title="Overview" />
 
-	if (!isLoading && !components) return props.navigation.goBack()
+	if (!isLoading && !components) {
+		props.navigation.goBack()
+		return null
+	}
 
 	if (isLoading)
 		return (
