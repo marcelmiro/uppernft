@@ -180,7 +180,10 @@ export default function BikeActivity(
 
 	const header = <Header {...props} title="Activity" />
 
-	if (!isLoading && !activities) return props.navigation.goBack()
+	if (!isLoading && !activities) {
+		props.navigation.goBack()
+		return null
+	}
 
 	if (isLoading) return <LoadingView header={header} />
 
