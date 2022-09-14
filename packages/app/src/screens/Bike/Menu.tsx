@@ -127,7 +127,7 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 
 	const { setQueryData } = trpc.useContext()
 
-	const { mutate: mutateStolen } = trpc.useMutation(['item.stolen'], {
+	const { mutateAsync: mutateStolen } = trpc.useMutation(['item.stolen'], {
 		onSuccess({ isStolen }) {
 			setIsStolen(isStolen)
 			setShowTheftModal(false)
@@ -145,7 +145,7 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 	})
 
 	function toggleStolen() {
-		mutateStolen({ serialNumber, isStolen: !isStolen })
+		return mutateStolen({ serialNumber, isStolen: !isStolen })
 	}
 
 	function share() {
