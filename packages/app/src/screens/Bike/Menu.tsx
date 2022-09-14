@@ -35,7 +35,7 @@ interface ActionProps {
 interface TheftModalProps {
 	show: boolean
 	handleClose(): void
-	onPress(): void
+	onPress(): unknown
 	isStolen: boolean
 }
 
@@ -66,6 +66,17 @@ function Action({ title, desc, icon: Icon, onPress }: ActionProps) {
 }
 
 function TheftModal({ show, handleClose, onPress, isStolen }: TheftModalProps) {
+	const [isLoading, setIsLoading] = useState(false)
+
+	async function handlePress() {
+		try {
+			setIsLoading(true)
+			await onPress()
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
 	return (
 		<Modal show={show} handleClose={handleClose}>
 			<Text style={styles.modalTitle}>
@@ -78,14 +89,18 @@ function TheftModal({ show, handleClose, onPress, isStolen }: TheftModalProps) {
 					? 'Anyone that searches or scans your physical bike will stop receiving notifications about its theft and the bike will be transferable again.'
 					: 'Anyone that searches or scans your physical bike will be shown a message to notify you about any new information about the bike such as its last known location.'}
 			</Text>
-			<Button onPress={onPress} containerStyle={styles.modalButton}>
+			<Button
+				onPress={handlePress}
+				containerStyle={styles.modalButton}
+				isLoading={isLoading}
+			>
 				{isStolen ? 'Remove stolen tag' : 'Mark as stolen'}
 			</Button>
 		</Modal>
 	)
 }
 
-function TheftInfoModal({ show, handleClose, onPress }: TheftInfoModalProps) {
+function TheftInfoModal({ show, handleClose }: TheftInfoModalProps) {
 	// TODO: Write modal text
 	return (
 		<Modal show={show} handleClose={handleClose}>

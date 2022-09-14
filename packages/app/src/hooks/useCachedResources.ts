@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import * as Font from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
+import * as SecureStore from 'expo-secure-store'
 
 import { useAuth } from '@/lib/auth'
 
@@ -22,7 +23,10 @@ export default function useCachedResources() {
 	useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
-				await Font.loadAsync(FontAwesome.font)
+				await Promise.all([
+					Font.loadAsync(FontAwesome.font),
+					SecureStore.isAvailableAsync(),
+				])
 			} catch (e) {
 				// We might want to provide this error information to an error reporting service
 				console.warn(e)

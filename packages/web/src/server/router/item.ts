@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
+import type { User } from '@prisma/client'
 
 import { createRouter } from './context'
 import { validateSession } from '../../lib/auth'
@@ -27,6 +28,7 @@ export const itemRouter = createRouter()
 				name: item.model.name,
 				imageUri: item.model.imageUri,
 				owner: item.owner.walletAddress,
+				stolen: item.isStolen,
 			}
 
 			ctx.res?.setHeader(
@@ -193,6 +195,75 @@ export const itemRouter = createRouter()
 						],
 					},
 				},
+			})
+		},
+	})
+	.mutation('transfer', {
+		input: z.object({
+			serialNumber: z.string().min(1, 'Serial number is required'),
+			transfereeType: z.string().min(1, 'Transferee type is required'),
+			transfereeValue: z.string().min(1, 'Transferee value is required'),
+		}),
+		async resolve({
+			ctx,
+			input: { serialNumber, transfereeType, transfereeValue },
+		}) {
+			const user = await validateSession(ctx)
+
+			const item = await ctx.prisma.item.findUnique({
+				where: { serialNumber },
+			})
+
+			if (!item)
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: 'Bike not found',
+				})
+
+			if (item.ownerId !== user.id)
+				throw new TRPCError({
+					code: 'FORBIDDEN',
+					message: "You don't have permission to transfer this bike",
+				})
+
+			if (item.isStolen)
+				throw new TRPCError({
+					code: 'FORBIDDEN',
+					message: 'Bike cannot be transferred if marked as stolen',
+				})
+
+			let beneficiary: User | null
+
+			if (transfereeType === 'username') {
+				beneficiary = await ctx.prisma.user.findUnique({
+					where: { username: transfereeValue },
+				})
+			} else if (transfereeType === 'email') {
+				beneficiary = await ctx.prisma.user.findUnique({
+					where: { email: transfereeValue },
+				})
+			} else {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Invalid user',
+				})
+			}
+
+			if (!beneficiary)
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: 'User not found',
+				})
+
+			if (item.ownerId === beneficiary.id)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Cannot transfer to the same owner',
+				})
+
+			return ctx.prisma.item.update({
+				where: { id: item.id },
+				data: { ownerId: beneficiary.id },
 			})
 		},
 	})

@@ -182,6 +182,7 @@ export default function Home({ navigation }: MainStackScreenProps<'Home'>) {
 				onPress={() =>
 					navigation.navigate('BikeRegister', {
 						screen: 'RegisterHome',
+						params: {},
 					})
 				}
 			>

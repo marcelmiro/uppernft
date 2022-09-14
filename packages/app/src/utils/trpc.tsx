@@ -14,6 +14,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import type { AppRouter } from '@uppernft/web/src/server/router'
 import { sidStore } from '@/store'
 
+export type { AppRouter } from '@uppernft/web/src/server/router'
+
 const TIMEOUT = 20_000
 
 export const trpc = createReactQueryHooks<AppRouter>()

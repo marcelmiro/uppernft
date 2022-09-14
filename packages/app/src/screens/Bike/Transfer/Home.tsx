@@ -3,12 +3,14 @@ import { StyleSheet, Pressable } from 'react-native'
 
 import Colors from '@/constants/Colors'
 import { BikeTransferStackScreenProps } from '@/navigation/types'
+import { trpc, parseErrorMessage } from '@/utils/trpc'
 import {
 	View,
 	Text,
 	Button,
 	LayoutScrollView,
 	layoutStyle,
+	ErrorMessage,
 } from '@/components/Themed'
 import Header from '@/components/Header'
 import Input, { KeyboardType } from '@/components/Input'
@@ -32,12 +34,33 @@ const keyboardTypes: Record<InputType, KeyboardType> = {
 export default function BikeTransferHome(
 	props: BikeTransferStackScreenProps<'TransferHome'>
 ) {
+	const { serialNumber } = props.route.params
+
 	const [inputType, setInputType] = useState<InputType>(inputTypes[0])
 	const [inputValue, setInputValue] = useState('')
+	const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+
+	const {
+		mutate: mutateTransfer,
+		isLoading,
+		error,
+	} = trpc.useMutation(['item.transfer'], {
+		onSuccess() {
+			props.navigation.replace('AfterTransferInfo')
+		},
+		onError() {
+			setIsButtonDisabled(true)
+		},
+	})
 
 	function changeInputType(type: InputType) {
 		setInputType(type)
 		setInputValue('')
+	}
+
+	function handleInputValue(value: string) {
+		setInputValue(value)
+		setIsButtonDisabled(!value)
 	}
 
 	return (
@@ -83,17 +106,25 @@ export default function BikeTransferHome(
 
 					<Input
 						value={inputValue}
-						onChange={setInputValue}
+						onChange={handleInputValue}
 						label={inputType[0].toUpperCase() + inputType.slice(1)}
 						placeholder={placeholders[inputType]}
 						keyboardType={keyboardTypes[inputType]}
 					/>
+
+					<ErrorMessage>{parseErrorMessage(error)}</ErrorMessage>
 				</View>
 
 				<Button
 					onPress={() =>
-						props.navigation.replace('AfterTransferInfo')
+						mutateTransfer({
+							serialNumber,
+							transfereeType: inputType,
+							transfereeValue: inputValue,
+						})
 					}
+					isLoading={isLoading}
+					disabled={isButtonDisabled}
 				>
 					Transfer
 				</Button>

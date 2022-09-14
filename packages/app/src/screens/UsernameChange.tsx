@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { MainStackScreenProps } from '@/navigation/types'
@@ -17,11 +17,12 @@ export default function UsernameChange(
 	const { username } = props.route.params
 
 	const [newUsername, setNewUsername] = useState(username)
-	const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+	const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
-	useEffect(() => {
-		setIsButtonDisabled(!newUsername || username === newUsername)
-	}, [newUsername])
+	function handleNewUsername(value: string) {
+		setNewUsername(value)
+		setIsButtonDisabled(!value || username === value)
+	}
 
 	return (
 		<LayoutScrollView>
@@ -35,7 +36,7 @@ export default function UsernameChange(
 
 					<Input
 						value={newUsername}
-						onChange={setNewUsername}
+						onChange={handleNewUsername}
 						label="Username"
 						placeholder="@username"
 					/>

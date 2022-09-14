@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
 import { BikeRegisterStackScreenProps } from '@/navigation/types'
-import { trpc, parseErrorMessage } from '@/utils/trpc'
+import { parseErrorMessage } from '@/utils/trpc'
 import {
 	View,
 	Button,
@@ -12,33 +12,26 @@ import {
 } from '@/components/Themed'
 import Header from '@/components/Header'
 import Input from '@/components/Input'
+import { useRegistrableQuery } from '@/screens/Bike/Register/Home'
 
 export default function BikeRegisterHome(
 	props: BikeRegisterStackScreenProps<'ManualRegister'>
 ) {
 	const [serialNumber, setSerialNumber] = useState('')
-	const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+	const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
-	const { data, isLoading, error, refetch } = trpc.useQuery(
-		['item.registrable', { serialNumber }],
-		{
-			enabled: false,
-			retry: false,
-			refetchOnMount: false,
-		}
-	)
+	const { isLoading, error, refetch } = useRegistrableQuery({
+		serialNumber,
+		navigation: props.navigation,
+		onError() {
+			setIsButtonDisabled(true)
+		},
+	})
 
 	function handleSerialNumberChange(value: string) {
 		setSerialNumber(value.toUpperCase())
+		setIsButtonDisabled(!value)
 	}
-
-	useEffect(() => {
-		setIsButtonDisabled(!serialNumber)
-	}, [serialNumber])
-
-	useEffect(() => {
-		if (data) props.navigation.navigate('ConfirmRegister', data)
-	}, [data])
 
 	return (
 		<LayoutScrollView>

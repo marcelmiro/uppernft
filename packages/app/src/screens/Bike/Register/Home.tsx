@@ -1,18 +1,73 @@
-import { StyleSheet } from 'react-native'
+import { useState, useEffect } from 'react'
+import { StyleSheet, ActivityIndicator } from 'react-native'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { TRPCClientErrorLike } from '@trpc/client'
 
 import Colors from '@/constants/Colors'
-import { BikeRegisterStackScreenProps } from '@/navigation/types'
+import {
+	BikeRegisterStackScreenProps,
+	BikeRegisterStackParamList,
+} from '@/navigation/types'
+import { trpc, AppRouter } from '@/utils/trpc'
 import { View, Text, TextLink, layoutStyle } from '@/components/Themed'
 import Header from '@/components/Header'
+import Modal from '@/components/Modal'
 import IconScanner from '@/icons/scanner.svg'
 
-export default function BikeRegisterHome(
-	props: BikeRegisterStackScreenProps<'RegisterHome'>
-) {
-	return (
-		<View style={styles.container}>
-			<Header {...props} includeTitle={false} />
+interface StatusModalData {
+	title?: string
+	desc?: string
+}
 
+interface StatusModalProps extends StatusModalData {
+	show: boolean
+	handleClose(): void
+}
+
+interface UseRegistrableQueryOptions {
+	serialNumber: string
+	navigation: NativeStackNavigationProp<
+		BikeRegisterStackParamList,
+		'RegisterHome' | 'ManualRegister'
+	>
+	onError?(e: TRPCClientErrorLike<AppRouter>): void
+}
+
+interface ContentViewProps {
+	navigation: NativeStackNavigationProp<BikeRegisterStackParamList>
+}
+
+export function useRegistrableQuery({
+	serialNumber,
+	navigation,
+	onError,
+}: UseRegistrableQueryOptions) {
+	return trpc.useQuery(['item.registrable', { serialNumber }], {
+		enabled: false,
+		retry: false,
+		refetchOnMount: false,
+		onSuccess(data) {
+			navigation.navigate('ConfirmRegister', data)
+		},
+		onError,
+	})
+}
+
+function LoadingView() {
+	return (
+		<View style={styles.loaderContainer}>
+			<ActivityIndicator
+				size="large"
+				color={Colors.accent}
+				style={styles.loader}
+			/>
+		</View>
+	)
+}
+
+function ContentView({ navigation }: ContentViewProps) {
+	return (
+		<>
 			<View style={styles.contentContainer}>
 				<IconScanner {...styles.contentIcon} />
 
@@ -25,16 +80,85 @@ export default function BikeRegisterHome(
 			</View>
 
 			<TextLink
-				onPress={() => props.navigation.navigate('ManualRegister')}
+				onPress={() => navigation.navigate('ManualRegister')}
 				hitSlop={16}
 			>
 				Manually enter the serial number
 			</TextLink>
+		</>
+	)
+}
+
+function StatusModal({ title, desc, show, handleClose }: StatusModalProps) {
+	if (!title && !desc) return null
+
+	return (
+		<Modal show={show} handleClose={handleClose}>
+			{title && <Text style={styles.modalTitle}>{title}</Text>}
+			{desc && <Text style={styles.modalSubtitle}>{desc}</Text>}
+		</Modal>
+	)
+}
+
+export default function BikeRegisterHome(
+	props: BikeRegisterStackScreenProps<'RegisterHome'>
+) {
+	const { serialNumber = '' } = props.route.params
+
+	const [showModal, setShowModal] = useState(false)
+	const [modalData, setModalData] = useState<StatusModalData>({})
+
+	const { isLoading, refetch } = useRegistrableQuery({
+		serialNumber,
+		navigation: props.navigation,
+		onError(e) {
+			if (e.data?.code === 'NOT_FOUND') {
+				return openModal(
+					'Bike not found',
+					`Serial number '${serialNumber}' was not found in our database.`
+				)
+			}
+			openModal(e.message)
+		},
+	})
+
+	function openModal(title?: string, desc?: string) {
+		setModalData({ title, desc })
+		setShowModal(true)
+	}
+
+	useEffect(() => {
+		if (serialNumber) refetch()
+	}, [])
+
+	return (
+		<View style={styles.container}>
+			<StatusModal
+				{...modalData}
+				show={showModal}
+				handleClose={() => setShowModal(false)}
+			/>
+
+			<Header {...props} includeTitle={false} />
+
+			{isLoading ? (
+				<LoadingView />
+			) : (
+				<ContentView navigation={props.navigation} />
+			)}
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
+	loaderContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	loader: {
+		marginBottom: '10%',
+	},
 	container: {
 		...layoutStyle,
 		flex: 1,
@@ -64,5 +188,16 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontSize: 14,
 		color: Colors.primary400,
+	},
+	modalTitle: {
+		fontWeight: '500',
+		fontSize: 18,
+		marginBottom: 24,
+		textAlign: 'center',
+	},
+	modalSubtitle: {
+		fontSize: 14,
+		color: Colors.primary400,
+		textAlign: 'center',
 	},
 })

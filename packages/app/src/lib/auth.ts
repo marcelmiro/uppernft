@@ -5,8 +5,7 @@ import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 import { TRPCClientErrorLike } from '@trpc/client'
 import { useMutation, UseMutationOptions } from 'react-query'
 
-import type { AppRouter } from '@uppernft/web/src/server/router'
-import { trpc, UseTRPCMutationOptions } from '@/utils/trpc'
+import { trpc, UseTRPCMutationOptions, AppRouter } from '@/utils/trpc'
 import { sidStore } from '@/store'
 
 interface User {

@@ -22,7 +22,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 					Account: 'account',
 					UsernameChange: 'account/username-change',
 
-					BikeRegister: 'bike/register/:sn',
+					BikeRegister: 'bike/register/:serialNumber',
 				},
 			},
 			// Modal: 'modal',

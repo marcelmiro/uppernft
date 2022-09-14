@@ -67,7 +67,7 @@ export type MainStackScreenProps<Screen extends keyof MainStackParamList> =
 	>
 
 export type BikeRegisterStackParamList = {
-	RegisterHome: undefined
+	RegisterHome: { serialNumber?: string }
 	ManualRegister: undefined
 	ConfirmRegister: { serialNumber: string; name: string; imageUri: string }
 	AfterRegisterInfo: undefined
