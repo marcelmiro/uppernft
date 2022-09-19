@@ -1,4 +1,4 @@
-import './src/server/env.mjs'
+import './src/env/server.mjs'
 
 /**
  * Don't be scared of the generics here.
@@ -16,4 +16,17 @@ export default defineNextConfig({
 	reactStrictMode: true,
 	swcMinify: true,
 	poweredByHeader: false,
+	images: {
+		domains: ['i.imgur.com'],
+	},
+
+	webpack(config) {
+		config.module.rules.push({
+			test: /\.svg$/i,
+			issuer: /\.[jt]sx?$/,
+			use: ['@svgr/webpack'],
+		})
+
+		return config
+	},
 })

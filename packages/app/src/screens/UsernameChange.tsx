@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
-import { MainStackScreenProps } from '@/navigation/types'
+import { MainStackScreenProps } from '@app/navigation/types'
 import {
 	View,
 	Button,
 	LayoutScrollView,
 	layoutStyle,
-} from '@/components/Themed'
-import Input from '@/components/Input'
-import Header from '@/components/Header'
+} from '@app/components/Themed'
+import Input from '@app/components/Input'
+import Header from '@app/components/Header'
 
 export default function UsernameChange(
 	props: MainStackScreenProps<'UsernameChange'>

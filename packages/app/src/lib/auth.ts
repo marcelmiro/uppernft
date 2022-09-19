@@ -5,8 +5,8 @@ import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 import { TRPCClientErrorLike } from '@trpc/client'
 import { useMutation, UseMutationOptions } from 'react-query'
 
-import { trpc, UseTRPCMutationOptions, AppRouter } from '@/utils/trpc'
-import { sidStore } from '@/store'
+import { trpc, UseTRPCMutationOptions, AppRouter } from '@app/utils/trpc'
+import { sidStore } from '@app/store'
 
 interface User {
 	email: string
@@ -44,15 +44,13 @@ export function useAuth() {
 			setIsReady(true)
 		},
 		retry(count, e) {
-			return handleRetry(
-				count,
-				e,
-				['FORBIDDEN', 'UNAUTHORIZED'],
-				function () {
-					setHasAborted(true)
-				}
+			return handleRetry(count, e, ['FORBIDDEN', 'UNAUTHORIZED'], () =>
+				setHasAborted(true)
 			)
 		},
+		refetchOnMount: false,
+		refetchOnReconnect: false,
+		refetchOnWindowFocus: false,
 	})
 
 	const formattedError = error && {

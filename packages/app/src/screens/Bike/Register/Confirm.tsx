@@ -1,16 +1,16 @@
 import { StyleSheet, Image, Dimensions } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { BikeRegisterStackScreenProps } from '@/navigation/types'
-import { trpc } from '@/utils/trpc'
+import Colors from '@app/constants/Colors'
+import { BikeRegisterStackScreenProps } from '@app/navigation/types'
+import { trpc } from '@app/utils/trpc'
 import {
 	View,
 	Text,
 	Button,
 	LayoutScrollView,
 	layoutStyle,
-} from '@/components/Themed'
-import Header from '@/components/Header'
+} from '@app/components/Themed'
+import Header from '@app/components/Header'
 
 export default function BikeRegisterConfirm(
 	props: BikeRegisterStackScreenProps<'ConfirmRegister'>
@@ -44,7 +44,9 @@ export default function BikeRegisterConfirm(
 							resizeMode="cover"
 						/>
 						<Text style={styles.bikeTitle}>{name}</Text>
-						<Text style={styles.bikeSubtitle}>{serialNumber}</Text>
+						<Text style={styles.bikeSubtitle}>
+							{serialNumber.toUpperCase()}
+						</Text>
 					</View>
 
 					<Text style={styles.confirmText}>

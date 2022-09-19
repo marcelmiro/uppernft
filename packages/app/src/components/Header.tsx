@@ -2,9 +2,9 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import { ParamListBase, Route } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
-import Colors from '@/constants/Colors'
-import { View, Title } from '@/components/Themed'
-import IconArrowRight from '@/icons/arrow-right.svg'
+import Colors from '@app/constants/Colors'
+import { View, Title } from '@app/components/Themed'
+import IconArrowRight from '@app/icons/arrow-right.svg'
 
 interface HeaderProps {
 	navigation: NativeStackNavigationProp<ParamListBase>

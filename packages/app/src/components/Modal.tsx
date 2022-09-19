@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 import DefaultModal from 'react-native-modal'
 
-import Colors from '@/constants/Colors'
-import { View } from '@/components/Themed'
+import Colors from '@app/constants/Colors'
+import { View } from '@app/components/Themed'
 
 interface ModalProps {
 	show: boolean

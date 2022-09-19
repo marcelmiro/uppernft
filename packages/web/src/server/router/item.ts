@@ -3,42 +3,9 @@ import { z } from 'zod'
 import type { User } from '@prisma/client'
 
 import { createRouter } from './context'
-import { validateSession } from '../../lib/auth'
-
-const ONE_DAY_IN_SECONDS = 60 * 60 * 24 * 7
+import { validateSession } from '@web/lib/auth'
 
 export const itemRouter = createRouter()
-	.query('metadata', {
-		input: z.object({
-			serialNumber: z.string().min(1, 'Serial number is required'),
-		}),
-		async resolve({ ctx, input: { serialNumber } }) {
-			const item = await ctx.prisma.item.findUnique({
-				where: { serialNumber },
-				include: { model: true, owner: true },
-			})
-
-			if (!item)
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Bike not found',
-				})
-
-			const res = {
-				name: item.model.name,
-				imageUri: item.model.imageUri,
-				owner: item.owner.walletAddress,
-				stolen: item.isStolen,
-			}
-
-			ctx.res?.setHeader(
-				'Cache-Control',
-				`s-maxage=15, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`
-			)
-
-			return res
-		},
-	})
 	.query('overview', {
 		input: z.object({
 			serialNumber: z.string().min(1, 'Serial number is required'),
@@ -121,9 +88,7 @@ export const itemRouter = createRouter()
 				.min(8, 'Invalid serial number'),
 		}),
 		async resolve({ ctx, input: { serialNumber } }) {
-			await validateSession(ctx)
-
-			// TODO: Temp code to check item availability
+			// FUTURE: Temp code to check item availability
 			const code = serialNumber.slice(-3)
 
 			const promises = [
@@ -162,7 +127,7 @@ export const itemRouter = createRouter()
 		async resolve({ ctx, input: { serialNumber } }) {
 			const user = await validateSession(ctx)
 
-			// TODO: Temp code to generate bike from fake model
+			// FUTURE: Temp code to generate bike from fake model
 			const code = serialNumber.slice(-3)
 
 			const model = await ctx.prisma.itemModel.findUnique({

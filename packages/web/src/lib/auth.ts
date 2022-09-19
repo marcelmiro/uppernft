@@ -6,7 +6,7 @@ import {
 import { hash, compare } from 'bcrypt'
 import { TRPCError } from '@trpc/server'
 
-import type { Context } from '../server/router/context'
+import type { Context } from '@web/server/router/context'
 
 interface CreateWalletObjOptions {
 	password: string

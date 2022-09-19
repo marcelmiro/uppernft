@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { View, Text, layoutStyle } from '@/components/Themed'
-import IconWarning from '@/icons/warning.svg'
+import Colors from '@app/constants/Colors'
+import { View, Text, layoutStyle } from '@app/components/Themed'
+import IconWarning from '@app/icons/warning.svg'
 
 export default function ErrorScreen() {
 	return (

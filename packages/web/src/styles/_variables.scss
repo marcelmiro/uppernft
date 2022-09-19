@@ -1,0 +1,50 @@
+$background: #f7f7f7;
+$primary: #1a1919;
+$primary-500: #4a4a4a;
+$primary-400: #6e6e6e;
+$primary-300: #aaaaaa;
+$primary-200: #dddddd;
+$primary-150: #eeeeee;
+$primary-100: #fafafa;
+$primary-0: #ffffff;
+
+$accent: #3069fe;
+$accent-800: #041934;
+$accent-400: #8babff;
+$accent-200: #cee0fc;
+$accent-100: #eaf0ff;
+
+$error: #f14e40;
+$error-200: #fde4e3;
+
+$themeTransition: 0.16s;
+
+$themes: (
+	light: (
+		background: '247, 247, 247',
+		primary: '26, 25, 25',
+		primary-500: '74, 74, 74',
+		primary-400: '110, 110, 110',
+		primary-300: '170, 170, 170',
+		primary-200: '221, 221, 221',
+		primary-150: '238, 238, 238',
+		primary-100: '250, 250, 250',
+		primary-0: '255, 255, 255',
+
+		accent: '48, 105, 254',
+		accent-800: '4, 25, 52',
+		accent-400: '139, 171, 255',
+		accent-200: '206, 224, 252',
+		accent-100: '234, 240, 255',
+
+		error: '241, 78, 64',
+		error-200: '253, 228, 227',
+	),
+);
+
+:root {
+	@each $name, $color in map-get($themes, 'light') {
+		--#{$name}: #{$color};
+	}
+	--theme-transition: 0.16s;
+}

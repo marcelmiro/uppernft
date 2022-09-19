@@ -10,12 +10,12 @@ import {
 	ScrollView,
 } from 'react-native'
 
-import { MainStackScreenProps } from '@/navigation/types'
-import Colors from '@/constants/Colors'
-import { trpc, inferQueryOutput } from '@/utils/trpc'
-import { Text, View, Button, layoutStyle } from '@/components/Themed'
-import IconAccount from '@/icons/profile.svg'
-import IconTray from '@/icons/tray.svg'
+import { MainStackScreenProps } from '@app/navigation/types'
+import Colors from '@app/constants/Colors'
+import { trpc, inferQueryOutput } from '@app/utils/trpc'
+import { Text, View, Button, layoutStyle } from '@app/components/Themed'
+import IconAccount from '@app/icons/profile.svg'
+import IconTray from '@app/icons/tray.svg'
 
 type Item = inferQueryOutput<'user.items'>[number]
 
@@ -88,7 +88,9 @@ function PopulatedView({
 				/>
 				<View style={{ flex: 1 }}>
 					<Text style={styles.itemTitle}>{item.model.name}</Text>
-					<Text style={styles.itemSubtitle}>{item.serialNumber}</Text>
+					<Text style={styles.itemSubtitle}>
+						{item.serialNumber.toUpperCase()}
+					</Text>
 				</View>
 			</Pressable>
 		)

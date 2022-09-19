@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useAuth } from '../context/auth'
+import { useAuth } from '@web/context/auth'
+import Meta from '@web/components/Meta'
 
 export default function Home() {
 	const [email, setEmail] = useState('')
@@ -63,6 +64,7 @@ export default function Home() {
 
 	return (
 		<div className="container">
+			<Meta />
 			<h1 className="title">upperNFT</h1>
 
 			<div className="grid">

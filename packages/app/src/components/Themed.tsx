@@ -15,7 +15,7 @@ import {
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
-import Colors from '@/constants/Colors'
+import Colors from '@app/constants/Colors'
 
 type TextLinkProps = DefaultText['props'] & {
 	onPress(): void

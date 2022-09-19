@@ -9,7 +9,7 @@ import {
 } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { inferQueryOutput } from '@/utils/trpc'
+import { inferQueryOutput } from '@app/utils/trpc'
 
 declare global {
 	namespace ReactNavigation {

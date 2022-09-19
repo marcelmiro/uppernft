@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, ViewStyle, Text } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -9,29 +9,29 @@ import {
 	MainStackParamList,
 	BikeRegisterStackParamList,
 	BikeTransferStackParamList,
-} from '@/navigation/types'
-import LinkingConfiguration from '@/navigation/LinkingConfiguration'
-import useCachedResources from '@/hooks/useCachedResources'
-import { useAuth } from '@/lib/auth'
+} from '@app/navigation/types'
+import LinkingConfiguration from '@app/navigation/LinkingConfiguration'
+import useCachedResources from '@app/hooks/useCachedResources'
+import { useAuth } from '@app/lib/auth'
 
-import ErrorScreen from '@/screens/ErrorScreen'
-import ModalScreen from '@/screens/ModalScreen'
-import NotFoundScreen from '@/screens/NotFoundScreen'
-import Login from '@/screens/Login'
-import Signup from '@/screens/Signup'
-import Home from '@/screens/Home'
-import Account from '@/screens/Account'
-import UsernameChange from '@/screens/UsernameChange'
-import BikeMenu from '@/screens/Bike/Menu'
-import BikeRegisterHome from '@/screens/Bike/Register/Home'
-import BikeRegisterManual from '@/screens/Bike/Register/Manual'
-import BikeRegisterConfirm from '@/screens/Bike/Register/Confirm'
-import BikeRegisterAfterInfo from '@/screens/Bike/Register/AfterInfo'
-import BikeOverview from '@/screens/Bike/Overview'
-import BikeActivity from '@/screens/Bike/Activity'
-import BikeTransferHome from '@/screens/Bike/Transfer/Home'
-import BikeTransferAfterInfo from '@/screens/Bike/Transfer/AfterInfo'
-import BikeSettings from '@/screens/Bike/Settings'
+import ErrorScreen from '@app/screens/ErrorScreen'
+import ModalScreen from '@app/screens/ModalScreen'
+import NotFoundScreen from '@app/screens/NotFoundScreen'
+import Login from '@app/screens/Login'
+import Signup from '@app/screens/Signup'
+import Home from '@app/screens/Home'
+import Account from '@app/screens/Account'
+import UsernameChange from '@app/screens/UsernameChange'
+import BikeMenu from '@app/screens/Bike/Menu'
+import BikeRegisterHome from '@app/screens/Bike/Register/Home'
+import BikeRegisterManual from '@app/screens/Bike/Register/Manual'
+import BikeRegisterConfirm from '@app/screens/Bike/Register/Confirm'
+import BikeRegisterAfterInfo from '@app/screens/Bike/Register/AfterInfo'
+import BikeOverview from '@app/screens/Bike/Overview'
+import BikeActivity from '@app/screens/Bike/Activity'
+import BikeTransferHome from '@app/screens/Bike/Transfer/Home'
+import BikeTransferAfterInfo from '@app/screens/Bike/Transfer/AfterInfo'
+import BikeSettings from '@app/screens/Bike/Settings'
 
 const contentStyle: StyleProp<ViewStyle> = {
 	backgroundColor: 'transparent',
@@ -42,7 +42,10 @@ export default function Navigation() {
 	if (!isLoadingComplete) return null
 
 	return (
-		<NavigationContainer linking={LinkingConfiguration}>
+		<NavigationContainer
+			linking={LinkingConfiguration}
+			fallback={<Text>Loading...</Text>}
+		>
 			{isError ? <ErrorScreen /> : <RootNavigator />}
 		</NavigationContainer>
 	)

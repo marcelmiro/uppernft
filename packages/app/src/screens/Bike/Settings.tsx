@@ -2,14 +2,14 @@ import * as React from 'react'
 import { StyleSheet, ScrollView, Pressable } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
-import Colors from '@/constants/Colors'
-import { MainStackScreenProps } from '@/navigation/types'
-import { trpc } from '@/utils/trpc'
-import { Text, View, layoutStyle } from '@/components/Themed'
-import Header from '@/components/Header'
-import IconReceipt from '@/icons/receipt.svg'
-import IconWrite from '@/icons/write.svg'
-import IconBin from '@/icons/bin.svg'
+import Colors from '@app/constants/Colors'
+import { MainStackScreenProps } from '@app/navigation/types'
+import { trpc } from '@app/utils/trpc'
+import { Text, View, layoutStyle } from '@app/components/Themed'
+import Header from '@app/components/Header'
+import IconReceipt from '@app/icons/receipt.svg'
+import IconWrite from '@app/icons/write.svg'
+import IconBin from '@app/icons/bin.svg'
 
 interface SettingProps {
 	title: string

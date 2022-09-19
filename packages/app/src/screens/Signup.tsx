@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import { z } from 'zod'
 
-import { AuthTabScreenProps } from '@/navigation/types'
-import Colors from '@/constants/Colors'
+import { AuthTabScreenProps } from '@app/navigation/types'
+import Colors from '@app/constants/Colors'
 import {
 	Text,
 	Title,
@@ -13,10 +13,10 @@ import {
 	ErrorMessage,
 	LayoutScrollView,
 	layoutStyle,
-} from '@/components/Themed'
-import Input from '@/components/Input'
-import { useSignup } from '@/lib/auth'
-import { parseErrorMessage } from '@/utils/trpc'
+} from '@app/components/Themed'
+import Input from '@app/components/Input'
+import { useSignup } from '@app/lib/auth'
+import { parseErrorMessage } from '@app/utils/trpc'
 
 export default function Signup({ navigation }: AuthTabScreenProps<'Signup'>) {
 	const [email, setEmail] = useState('')

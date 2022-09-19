@@ -3,16 +3,16 @@ import { StyleSheet, ActivityIndicator } from 'react-native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { TRPCClientErrorLike } from '@trpc/client'
 
-import Colors from '@/constants/Colors'
+import Colors from '@app/constants/Colors'
 import {
 	BikeRegisterStackScreenProps,
 	BikeRegisterStackParamList,
-} from '@/navigation/types'
-import { trpc, AppRouter } from '@/utils/trpc'
-import { View, Text, TextLink, layoutStyle } from '@/components/Themed'
-import Header from '@/components/Header'
-import Modal from '@/components/Modal'
-import IconScanner from '@/icons/scanner.svg'
+} from '@app/navigation/types'
+import { trpc, AppRouter } from '@app/utils/trpc'
+import { View, Text, TextLink, layoutStyle } from '@app/components/Themed'
+import Header from '@app/components/Header'
+import Modal from '@app/components/Modal'
+import IconScanner from '@app/icons/scanner.svg'
 
 interface StatusModalData {
 	title?: string
@@ -46,6 +46,8 @@ export function useRegistrableQuery({
 		enabled: false,
 		retry: false,
 		refetchOnMount: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
 		onSuccess(data) {
 			navigation.navigate('ConfirmRegister', data)
 		},
@@ -103,7 +105,7 @@ function StatusModal({ title, desc, show, handleClose }: StatusModalProps) {
 export default function BikeRegisterHome(
 	props: BikeRegisterStackScreenProps<'RegisterHome'>
 ) {
-	const { serialNumber = '' } = props.route.params
+	const serialNumber = props.route.params?.serialNumber || ''
 
 	const [showModal, setShowModal] = useState(false)
 	const [modalData, setModalData] = useState<StatusModalData>({})
@@ -115,7 +117,7 @@ export default function BikeRegisterHome(
 			if (e.data?.code === 'NOT_FOUND') {
 				return openModal(
 					'Bike not found',
-					`Serial number '${serialNumber}' was not found in our database.`
+					`Serial number '${serialNumber.toUpperCase()}' was not found in our database.`
 				)
 			}
 			openModal(e.message)

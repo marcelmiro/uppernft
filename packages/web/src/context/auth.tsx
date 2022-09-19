@@ -1,8 +1,8 @@
 import { useState, useEffect, createContext, useContext } from 'react'
 import type Wallet from 'ethereumjs-wallet'
 
-import { useTRPCClient } from '../utils/trpc'
-import { generateWalletFromEntropy } from '../lib/auth-client'
+import { useTRPCClient } from '@web/utils/trpc'
+import { generateWalletFromEntropy } from '@web/lib/auth-client'
 
 const SESSION_NAME = 'uppernft.sid'
 

@@ -9,9 +9,9 @@ import {
 import { SvgProps } from 'react-native-svg'
 import Constants from 'expo-constants'
 
-import Colors from '@/constants/Colors'
-import { MainStackScreenProps } from '@/navigation/types'
-import { useLogout } from '@/lib/auth'
+import Colors from '@app/constants/Colors'
+import { MainStackScreenProps } from '@app/navigation/types'
+import { useLogout } from '@app/lib/auth'
 import {
 	Text,
 	TextLink,
@@ -19,21 +19,21 @@ import {
 	Button,
 	Switch,
 	layoutStyle,
-} from '@/components/Themed'
-import Header from '@/components/Header'
-import Modal from '@/components/Modal'
+} from '@app/components/Themed'
+import Header from '@app/components/Header'
+import Modal from '@app/components/Modal'
 
-import IconQuestion from '@/icons/question.svg'
-import IconEmail from '@/icons/email.svg'
-import IconPhone from '@/icons/phone.svg'
-import IconMegaphone from '@/icons/megaphone.svg'
-import IconStar from '@/icons/star.svg'
-import IconTwitter from '@/icons/twitter.svg'
-import IconDocument from '@/icons/document.svg'
-import IconInfo from '@/icons/info.svg'
-import IconExit from '@/icons/exit.svg'
-import IconBin from '@/icons/bin.svg'
-import { useAuth } from '@/lib/auth'
+import IconQuestion from '@app/icons/question.svg'
+import IconEmail from '@app/icons/email.svg'
+import IconPhone from '@app/icons/phone.svg'
+import IconMegaphone from '@app/icons/megaphone.svg'
+import IconStar from '@app/icons/star.svg'
+import IconTwitter from '@app/icons/twitter.svg'
+import IconDocument from '@app/icons/document.svg'
+import IconInfo from '@app/icons/info.svg'
+import IconExit from '@app/icons/exit.svg'
+import IconBin from '@app/icons/bin.svg'
+import { useAuth } from '@app/lib/auth'
 
 const { useState } = React
 

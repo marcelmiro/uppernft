@@ -2,8 +2,8 @@ import { createNextApiHandler } from '@trpc/server/adapters/next'
 import { NextApiHandler } from 'next'
 import Cors from 'cors'
 
-import { appRouter } from '../../../server/router'
-import { createContext } from '../../../server/router/context'
+import { appRouter } from '@web/server/router'
+import { createContext } from '@web/server/router/context'
 
 const cors = Cors()
 

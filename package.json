@@ -1,47 +1,43 @@
 {
-  "name": "uppernft",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "web:dev": "yarn workspace @uppernft/web dev",
-    "web:build": "yarn workspace @uppernft/web build",
-    "web:start": "yarn workspace @uppernft/web start",
-    "web:lint": "yarn workspace @uppernft/web lint",
-    "web:postinstall": "yarn workspace @uppernft/web postinstall",
-    "app:start": "yarn workspace @uppernft/app start",
-    "app:android": "yarn workspace @uppernft/app android",
-    "app:ios": "yarn workspace @uppernft/app ios",
-    "app:web": "yarn workspace @uppernft/app web",
-    "app:eject": "yarn workspace @uppernft/app eject",
-    "app:test": "yarn workspace @uppernft/app test",
-    "app:build": "cd packages/app && npx eas build -p android --profile preview",
-    "dev": "concurrently --kill-others-on-fail \"yarn web:dev\" \"yarn app:android\"",
-    "clean": "cmd.exe /c \"@for /d /r . %d in (node_modules) do @if exist %d (echo %d && rd %d /s /q)\" && del .\\yarn.lock",
-    "postinstall": "prisma generate && patch-package"
-  },
-  "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/assert",
-      "**/events"
-    ]
-  },
-  "engines": {
-    "npm": "please-use-yarn"
-  },
-  "author": "Marcel Miro <marcelmiro1@hotmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@prisma/client": "^4.3.1",
-    "concurrently": "^7.4.0",
-    "patch-package": "^6.4.7",
-    "postinstall-postinstall": "^2.1.0",
-    "prisma": "^4.3.1",
-    "ts-node": "^10.9.1"
-  }
+	"name": "uppernft",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"db:push": "yarn workspace @uppernft/db push",
+		"db:studio": "yarn workspace @uppernft/db studio",
+		"web:dev": "yarn workspace @uppernft/web dev",
+		"web:build": "yarn workspace @uppernft/web build",
+		"web:start": "yarn workspace @uppernft/web start",
+		"web:lint": "yarn workspace @uppernft/web lint",
+		"app:start": "yarn workspace @uppernft/app start",
+		"app:android": "yarn workspace @uppernft/app android",
+		"app:ios": "yarn workspace @uppernft/app ios",
+		"app:web": "yarn workspace @uppernft/app web",
+		"app:eject": "yarn workspace @uppernft/app eject",
+		"app:test": "yarn workspace @uppernft/app test",
+		"app:build": "cd packages/app && npx eas build -p android --profile preview",
+		"dev": "concurrently --kill-others-on-fail \"yarn web:dev\" \"yarn app:android\"",
+		"clean": "cmd.exe /c \"@for /d /r . %d in (node_modules) do @if exist %d (echo %d && rd %d /s /q)\" && del .\\yarn.lock",
+		"postinstall": "yarn workspace @uppernft/db prisma generate && patch-package"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		],
+		"nohoist": [
+			"**/assert",
+			"**/events"
+		]
+	},
+	"engines": {
+		"npm": "please-use-yarn"
+	},
+	"author": "Marcel Miro <marcelmiro1@hotmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"concurrently": "^7.4.0",
+		"patch-package": "^6.4.7",
+		"postinstall-postinstall": "^2.1.0",
+		"turbo": "^1.4.7"
+	}
 }

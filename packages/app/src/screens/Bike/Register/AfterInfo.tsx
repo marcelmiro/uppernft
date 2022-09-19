@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { BikeRegisterStackScreenProps } from '@/navigation/types'
-import { View, Text, layoutStyle, Button } from '@/components/Themed'
-import IconClock from '@/icons/clock.svg'
+import Colors from '@app/constants/Colors'
+import { BikeRegisterStackScreenProps } from '@app/navigation/types'
+import { View, Text, layoutStyle, Button } from '@app/components/Themed'
+import IconClock from '@app/icons/clock.svg'
 
 export default function BikeRegisterAfterInfo({
 	navigation,

@@ -7,11 +7,11 @@ import {
 	ScrollView,
 } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { MainStackScreenProps } from '@/navigation/types'
-import { inferQueryOutput, trpc } from '@/utils/trpc'
-import { View, Text, layoutStyle } from '@/components/Themed'
-import Header from '@/components/Header'
+import Colors from '@app/constants/Colors'
+import { MainStackScreenProps } from '@app/navigation/types'
+import { inferQueryOutput, trpc } from '@app/utils/trpc'
+import { View, Text, layoutStyle } from '@app/components/Themed'
+import Header from '@app/components/Header'
 
 interface ItemProps {
 	label: string
@@ -35,16 +35,8 @@ function getComponents(data: inferQueryOutput<'item.overview'>) {
 
 	const items: ItemProps[] = [
 		{
-			label: 'Model name',
-			value: data.model.name,
-		},
-		{
 			label: 'Model code',
 			value: data.model.code,
-		},
-		{
-			label: 'Serial number',
-			value: data.serialNumber,
 		},
 	]
 

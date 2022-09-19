@@ -2,8 +2,8 @@ import { registerRootComponent } from 'expo'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
-import { TRPCProvider } from '@/utils/trpc'
-import Navigation from '@/navigation/index'
+import { TRPCProvider } from '@app/utils/trpc'
+import Navigation from '@app/navigation/index'
 
 function App() {
 	return (

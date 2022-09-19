@@ -12,11 +12,11 @@ import superjson from 'superjson'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import type { AppRouter } from '@uppernft/web/src/server/router'
-import { sidStore } from '@/store'
+import { sidStore } from '@app/store'
 
 export type { AppRouter } from '@uppernft/web/src/server/router'
 
-const TIMEOUT = 20_000
+const TIMEOUT_IN_MS = 30_000
 
 export const trpc = createReactQueryHooks<AppRouter>()
 
@@ -49,7 +49,7 @@ export function createTRPCClient(options?: CreateTRPCClientProps) {
 					headers.append('Authorization', 'Bearer ' + sessionToken)
 			}
 
-			const timeout = setTimeout(() => controller.abort(), TIMEOUT)
+			const timeout = setTimeout(() => controller.abort(), TIMEOUT_IN_MS)
 
 			options ||= {}
 			options.headers = headers

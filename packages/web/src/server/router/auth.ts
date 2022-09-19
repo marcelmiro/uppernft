@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { createRouter } from './context'
-import { signup, login, validateSession } from '../../lib/auth'
+import { signup, login, validateSession } from '@web/lib/auth'
 
 export const authRouter = createRouter()
 	.mutation('signup', {

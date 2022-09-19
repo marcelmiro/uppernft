@@ -1,5 +1,5 @@
 import { createRouter } from './context'
-import { validateSession } from '../../lib/auth'
+import { validateSession } from '@web/lib/auth'
 
 export const userRouter = createRouter().query('items', {
 	async resolve({ ctx }) {

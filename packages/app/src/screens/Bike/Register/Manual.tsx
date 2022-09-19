@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 
-import { BikeRegisterStackScreenProps } from '@/navigation/types'
-import { parseErrorMessage } from '@/utils/trpc'
+import { BikeRegisterStackScreenProps } from '@app/navigation/types'
+import { parseErrorMessage } from '@app/utils/trpc'
 import {
 	View,
 	Button,
 	layoutStyle,
 	LayoutScrollView,
 	ErrorMessage,
-} from '@/components/Themed'
-import Header from '@/components/Header'
-import Input from '@/components/Input'
-import { useRegistrableQuery } from '@/screens/Bike/Register/Home'
+} from '@app/components/Themed'
+import Header from '@app/components/Header'
+import Input from '@app/components/Input'
+import { useRegistrableQuery } from '@app/screens/Bike/Register/Home'
 
 export default function BikeRegisterHome(
 	props: BikeRegisterStackScreenProps<'ManualRegister'>

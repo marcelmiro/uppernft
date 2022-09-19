@@ -10,16 +10,16 @@ import {
 import { SvgProps } from 'react-native-svg'
 import * as Linking from 'expo-linking'
 
-import Colors from '@/constants/Colors'
-import { MainStackScreenProps } from '@/navigation/types'
-import { inferQueryOutput, trpc } from '@/utils/trpc'
-import { View, Text, layoutStyle } from '@/components/Themed'
-import Header from '@/components/Header'
-import IconPlus from '@/icons/plus.svg'
-import IconArrowBidirectional from '@/icons/arrow-bidirectional.svg'
-import IconWrench from '@/icons/wrench.svg'
-import IconWrite from '@/icons/write.svg'
-import IconLink from '@/icons/link.svg'
+import Colors from '@app/constants/Colors'
+import { MainStackScreenProps } from '@app/navigation/types'
+import { inferQueryOutput, trpc } from '@app/utils/trpc'
+import { View, Text, layoutStyle } from '@app/components/Themed'
+import Header from '@app/components/Header'
+import IconPlus from '@app/icons/plus.svg'
+import IconArrowBidirectional from '@app/icons/arrow-bidirectional.svg'
+import IconWrench from '@app/icons/wrench.svg'
+import IconWrite from '@app/icons/write.svg'
+import IconLink from '@app/icons/link.svg'
 
 const { useMemo } = React
 

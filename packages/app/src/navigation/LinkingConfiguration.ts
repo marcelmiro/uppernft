@@ -4,29 +4,36 @@
  * https://reactnavigation.org/docs/configuring-links
  */
 
-import { LinkingOptions } from '@react-navigation/native'
+import Constants from 'expo-constants'
 import * as Linking from 'expo-linking'
+import type { LinkingOptions } from '@react-navigation/native'
 
-import { RootStackParamList } from '@/navigation/types'
+import { RootStackParamList } from '@app/navigation/types'
+
+const prefixes = [Linking.createURL('/')]
+
+const WEB_URL = Constants.manifest?.extra?.WEB_URL as string | undefined
+if (WEB_URL) prefixes.push(`${WEB_URL}/app`)
 
 const linking: LinkingOptions<RootStackParamList> = {
-	prefixes: [Linking.createURL('/')],
+	prefixes,
 	config: {
 		screens: {
 			Root: {
 				initialRouteName: 'Home',
 				screens: {
-					Login: 'login',
-					Signup: 'signup',
-
+					Home: '',
 					Account: 'account',
-					UsernameChange: 'account/username-change',
 
-					BikeRegister: 'bike/register/:serialNumber',
+					BikeRegister: {
+						screens: {
+							RegisterHome: 'bike/register/:serialNumber?',
+						},
+					},
 				},
 			},
 			// Modal: 'modal',
-			NotFound: '*',
+			NotFound: '*', // TODO: Redesign
 		},
 	},
 }

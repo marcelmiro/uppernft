@@ -9,19 +9,19 @@ import {
 } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
-import Colors from '@/constants/Colors'
-import { MainStackScreenProps } from '@/navigation/types'
-import { trpc } from '@/utils/trpc'
-import { View, Text, Button, layoutStyle } from '@/components/Themed'
-import Header from '@/components/Header'
-import Modal from '@/components/Modal'
-import IconShare from '@/icons/share.svg'
-import IconEye from '@/icons/eye.svg'
-import IconActivity from '@/icons/activity.svg'
-import IconArrowBidirectional from '@/icons/arrow-bidirectional.svg'
-import IconWarning from '@/icons/warning.svg'
-import IconDefense from '@/icons/defense.svg'
-import IconGear from '@/icons/gear.svg'
+import Colors from '@app/constants/Colors'
+import { MainStackScreenProps } from '@app/navigation/types'
+import { trpc } from '@app/utils/trpc'
+import { View, Text, Button, layoutStyle } from '@app/components/Themed'
+import Header from '@app/components/Header'
+import Modal from '@app/components/Modal'
+import IconShare from '@app/icons/share.svg'
+import IconEye from '@app/icons/eye.svg'
+import IconActivity from '@app/icons/activity.svg'
+import IconArrowBidirectional from '@app/icons/arrow-bidirectional.svg'
+import IconWarning from '@app/icons/warning.svg'
+import IconDefense from '@app/icons/defense.svg'
+import IconGear from '@app/icons/gear.svg'
 
 const { useState } = React
 
@@ -200,7 +200,9 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 			<ScrollView style={[styles.contentWrapper, { width }]}>
 				<View style={styles.content}>
 					<Text style={styles.title}>{name}</Text>
-					<Text style={styles.subtitle}>{serialNumber}</Text>
+					<Text style={styles.subtitle}>
+						{serialNumber.toUpperCase()}
+					</Text>
 
 					<Action
 						title="Overview"

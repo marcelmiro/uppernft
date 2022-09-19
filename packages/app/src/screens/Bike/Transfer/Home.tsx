@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { StyleSheet, Pressable } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { BikeTransferStackScreenProps } from '@/navigation/types'
-import { trpc, parseErrorMessage } from '@/utils/trpc'
+import Colors from '@app/constants/Colors'
+import { BikeTransferStackScreenProps } from '@app/navigation/types'
+import { trpc, parseErrorMessage } from '@app/utils/trpc'
 import {
 	View,
 	Text,
@@ -11,9 +11,9 @@ import {
 	LayoutScrollView,
 	layoutStyle,
 	ErrorMessage,
-} from '@/components/Themed'
-import Header from '@/components/Header'
-import Input, { KeyboardType } from '@/components/Input'
+} from '@app/components/Themed'
+import Header from '@app/components/Header'
+import Input, { KeyboardType } from '@app/components/Input'
 
 const inputTypes = ['username', 'email', 'address'] as const
 

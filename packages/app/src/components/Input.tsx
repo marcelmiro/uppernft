@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
 import { StyleSheet, TextInput, Pressable } from 'react-native'
 
-import Colors from '@/constants/Colors'
-import { Text, View } from '@/components/Themed'
+import Colors from '@app/constants/Colors'
+import { Text, View } from '@app/components/Themed'
 
 export type KeyboardType = TextInput['props']['keyboardType']
 

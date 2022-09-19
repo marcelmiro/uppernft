@@ -4,17 +4,10 @@
 		"strict": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/assets/*": ["./assets/*"],
-			"@/icons/*": ["./assets/icons/*"],
-			"@/images/*": ["./assets/images/*"],
-			"@/components/*": ["./src/components/*"],
-			"@/constants/*": ["./src/constants/*"],
-			"@/hooks/*": ["./src/hooks/*"],
-			"@/lib/*": ["./src/lib/*"],
-			"@/navigation/*": ["./src/navigation/*"],
-			"@/screens/*": ["./src/screens/*"],
-			"@/utils/*": ["./src/utils/*"],
-			"@/store": ["./src/store"]
+			"@app/icons/*": ["./assets/icons/*"],
+			"@app/images/*": ["./assets/images/*"],
+			"@app/*": ["./src/*"],
+			"@web/*": ["../web/src/*"]
 		}
 	}
 }
