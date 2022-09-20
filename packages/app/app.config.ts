@@ -30,7 +30,7 @@ const config: ExpoConfig = {
 		userInterfaceStyle: 'light',
 	},
 	android: {
-		// package: 'com.uppernft.demo',
+		package: 'com.uppernft.demo',
 		adaptiveIcon: {
 			foregroundImage: './assets/images/adaptive-icon.png',
 			backgroundColor: '#F7F7F7',
