@@ -8,6 +8,7 @@ import {
 	Share,
 } from 'react-native'
 import { SvgProps } from 'react-native-svg'
+import Constants from 'expo-constants'
 
 import Colors from '@app/constants/Colors'
 import { MainStackScreenProps } from '@app/navigation/types'
@@ -44,6 +45,8 @@ interface TheftInfoModalProps {
 	handleClose(): void
 	onPress(): void
 }
+
+const WEB_URL = Constants.manifest?.extra?.WEB_URL
 
 function Action({ title, desc, icon: Icon, onPress }: ActionProps) {
 	return (
@@ -149,8 +152,8 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 	}
 
 	function share() {
-		// TODO: Get URL from app config file
-		return Share.share({ url: 'https://google.com/' })
+		const url = `${WEB_URL}/bike/${serialNumber.toUpperCase()}`
+		return Share.share({ url })
 	}
 
 	return (

@@ -36,7 +36,6 @@ export function getDevice() {
 	return res
 }
 
-// TODO: Get from app.config file
 const redirectOptions = {
 	scheme: 'unft',
 

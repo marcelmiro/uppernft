@@ -36,10 +36,3 @@ for (let key of Object.keys(_clientEnv.data)) {
 }
 
 export const env = _clientEnv.data
-
-console.log('Client env:')
-console.log({
-	NEXT_PUBLIC_BASE_URL: env.NEXT_PUBLIC_BASE_URL,
-})
-console.log('')
-console.log('')

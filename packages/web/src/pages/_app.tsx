@@ -1,8 +1,8 @@
 // src/pages/_app.tsx
+import type { AppType } from 'next/app'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
 import { withTRPC } from '@trpc/next'
-import type { AppType } from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
 
 import type { AppRouter } from '@web/server/router'

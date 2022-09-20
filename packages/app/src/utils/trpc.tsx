@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Constants from 'expo-constants'
 import {
 	createReactQueryHooks,
 	CreateTRPCClientOptions,
@@ -10,6 +9,7 @@ import {
 import type { inferProcedureOutput, inferProcedureInput } from '@trpc/server'
 import superjson from 'superjson'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import Constants from 'expo-constants'
 
 import type { AppRouter } from '@uppernft/web/src/server/router'
 import { sidStore } from '@app/store'

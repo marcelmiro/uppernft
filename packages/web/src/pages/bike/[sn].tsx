@@ -81,7 +81,7 @@ function getComponents(data: DataResponse) {
 	const items: ComponentProps[] = [
 		{
 			title: 'Serial number',
-			value: data.serialNumber,
+			value: data.serialNumber.toUpperCase(),
 		},
 		{
 			title: 'Model code',
@@ -370,10 +370,12 @@ export default function Bike(props: BikeProps) {
 		}
 	)
 
+	const serialNumber = props.serialNumber.toUpperCase()
+
 	if (props.notFound) {
 		if (isLoading) return <LoadingView />
 
-		if (data) return <Register {...data} />
+		if (data) return <Register {...data} serialNumber={serialNumber} />
 
 		return (
 			<Layout>
@@ -389,7 +391,7 @@ export default function Bike(props: BikeProps) {
 		)
 	}
 
-	const { serialNumber, name, owner, imageUri, stolen } = props
+	const { name, owner, imageUri, stolen } = props
 
 	const components = getComponents(props).map((props, i) => (
 		<Component {...props} key={i} />
@@ -404,11 +406,7 @@ export default function Bike(props: BikeProps) {
 		.map((props, i) => <Transaction {...props} key={i} />)
 
 	return (
-		<Layout
-			meta={{
-				title: `${name} (${serialNumber.toUpperCase()}) | upperNFT`,
-			}}
-		>
+		<Layout meta={{ title: `${name} (${serialNumber})` }}>
 			{stolen && <StolenModal />}
 
 			<main className={styles.main}>

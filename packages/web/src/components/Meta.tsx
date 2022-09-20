@@ -13,17 +13,14 @@ const CANONICAL = env.NEXT_PUBLIC_BASE_URL
 const IMAGE = 'https://i.imgur.com/ahBxg7i.png'
 
 export default function Meta({
-	title,
+	title = '',
 	desc,
 	children,
 	hideIndex = false,
 }: MetaProps) {
-	// TODO: Add "..." if > max length
-	title = title?.slice(0, 60)
-	title ||= TITLE
+	if (title.length > 50) title = `${title.slice(0, 50)}...`
+	title += title ? ` | ${TITLE}` : TITLE
 	desc = desc?.slice(0, 160)
-
-	// title = title ? `${title} | ${TITLE}` : TITLE
 
 	return (
 		<Head>
