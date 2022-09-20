@@ -1,0 +1,16 @@
+.wrapper {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.container {
+	width: 100%;
+	max-width: 36rem;
+	padding: 0 1rem;
+	box-sizing: content-box;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-between;
+	gap: 5rem;
+}

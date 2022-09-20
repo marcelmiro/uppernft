@@ -15,26 +15,6 @@
 	gap: 5rem;
 }
 
-.headerContainer {
-	margin: 1.5rem 0 2rem;
-	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
-	gap: 0.5rem 1rem;
-}
-
-.logoImage {
-	width: 2rem;
-	height: 2rem;
-	flex-shrink: 0;
-}
-
-.logoName {
-	font-weight: 500;
-	font-size: 1.125rem;
-	letter-spacing: 0.5px;
-}
-
 .main {
 	margin-bottom: 2rem;
 	display: flex;

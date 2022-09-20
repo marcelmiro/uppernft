@@ -1,10 +1,4 @@
-import {
-	useState,
-	useRef,
-	useMemo,
-	PropsWithChildren,
-	useCallback,
-} from 'react'
+import { useState, useRef, PropsWithChildren } from 'react'
 import {
 	GetServerSideProps as _GetServerSideProps,
 	InferGetServerSidePropsType,
@@ -20,7 +14,7 @@ import Meta, { MetaProps } from '@web/components/Meta'
 import SkeletonImage from '@web/components/SkeletonImage'
 import LoadingSpinner from '@web/components/LoadingSpinner'
 import Modal, { ModalRefProps } from '@web/components/Modal'
-import Logo from '@web/public/logo.png'
+import Header from '@web/components/Header'
 import IconPlus from '@web/public/plus.svg'
 import IconArrowBidirectional from '@web/public/arrow-bidirectional.svg'
 import IconWrench from '@web/public/wrench.svg'
@@ -95,19 +89,6 @@ function getComponents(data: DataResponse) {
 	}
 
 	return items
-}
-
-function Header() {
-	return (
-		<div className={styles.headerContainer}>
-			<SkeletonImage
-				src={Logo}
-				className={styles.logoImage}
-				alt="upperNFT logo"
-			/>
-			<p className={styles.logoName}>upperNFT</p>
-		</div>
-	)
 }
 
 function Footer() {

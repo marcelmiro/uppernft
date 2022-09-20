@@ -6,16 +6,11 @@ import { withTRPC } from '@trpc/next'
 import superjson from 'superjson'
 
 import type { AppRouter } from '@web/server/router'
-import { AuthProvider } from '@web/context/auth'
 import { getBaseUrl } from '@web/utils/url'
 import '@web/styles/globals.scss'
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-	return (
-		<AuthProvider>
-			<Component {...pageProps} />
-		</AuthProvider>
-	)
+	return <Component {...pageProps} />
 }
 
 export default withTRPC<AppRouter>({
