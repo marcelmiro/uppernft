@@ -150,7 +150,7 @@ function Section({ title, data, emptyView }: SectionProps) {
 		<div className={styles.sectionContainer}>
 			<div className={styles.sectionHeader}>
 				<h2 className={styles.sectionTitle}>{title}</h2>
-				{data.length > 0 && (
+				{data.length > 3 && (
 					<button
 						onClick={toggleOpen}
 						className={styles.sectionToggleButton}

@@ -103,7 +103,7 @@ export function useAppRedirect({ path = '', query }: UseAppRedirectOptions) {
 			const redirectTime = new Date().getTime()
 			Router.push(url)
 
-			await new Promise((resolve) => setTimeout(resolve, 100))
+			await new Promise((resolve) => setTimeout(resolve, 200))
 
 			if (!windowFocus.current) return true
 
@@ -133,7 +133,7 @@ export function useAppRedirect({ path = '', query }: UseAppRedirectOptions) {
 			const intentUrl = `intent://${path}#Intent;scheme=unft;S.browser_fallback_url=${appStoreUrls.android};end`
 			Router.push(intentUrl)
 
-			await new Promise((resolve) => setTimeout(resolve, 100))
+			await new Promise((resolve) => setTimeout(resolve, 200))
 
 			return !windowFocus.current
 		}
