@@ -10,6 +10,7 @@
 		"web:build": "yarn workspace @uppernft/web build",
 		"web:start": "yarn workspace @uppernft/web start",
 		"web:lint": "yarn workspace @uppernft/web lint",
+		"app": "yarn workspace @uppernft/app start",
 		"app:start": "yarn workspace @uppernft/app start",
 		"app:android": "yarn workspace @uppernft/app android",
 		"app:ios": "yarn workspace @uppernft/app ios",
@@ -37,6 +38,6 @@
 	"devDependencies": {
 		"patch-package": "^6.4.7",
 		"postinstall-postinstall": "^2.1.0",
-		"turbo": "^1.4.7"
+		"turbo": "^1.5.4"
 	}
 }
