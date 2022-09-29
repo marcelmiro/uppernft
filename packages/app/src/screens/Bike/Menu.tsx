@@ -48,6 +48,9 @@ interface TheftInfoModalProps {
 
 const WEB_URL = Constants.manifest?.extra?.WEB_URL
 
+const { width } = Dimensions.get('window')
+const imageMinHeight = parseInt(String(width / 2))
+
 function Action({ title, desc, icon: Icon, onPress }: ActionProps) {
 	return (
 		<Pressable
@@ -125,9 +128,6 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 	const [showTheftModal, setShowTheftModal] = useState(false)
 	const [showTheftInfoModal, setShowTheftInfoModal] = useState(false)
 
-	const { width } = Dimensions.get('window')
-	const imageMinHeight = parseInt(String(width / 2))
-
 	const { setQueryData } = trpc.useContext()
 
 	const { mutateAsync: mutateStolen } = trpc.useMutation(['item.stolen'], {
@@ -200,7 +200,7 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 				)}
 			</View>
 
-			<ScrollView style={[styles.contentWrapper, { width }]}>
+			<ScrollView style={styles.contentWrapper}>
 				<View style={styles.content}>
 					<Text style={styles.title}>{name}</Text>
 					<Text style={styles.subtitle}>
@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
 		height: '100%',
 	},
 	contentWrapper: {
+		width,
 		backgroundColor: Colors.primary0,
 		marginLeft: layoutStyle.paddingHorizontal * -1,
 		borderTopLeftRadius: 32,

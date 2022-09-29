@@ -29,6 +29,17 @@ export type RootStackParamList = {
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 	NativeStackScreenProps<RootStackParamList, Screen>
 
+export type AuthStackParamList = {
+	Onboarding: undefined
+	Tab: undefined
+}
+
+export type AuthStackScreenProps<Screen extends keyof AuthStackParamList> =
+	CompositeScreenProps<
+		NativeStackScreenProps<AuthStackParamList, Screen>,
+		NativeStackScreenProps<RootStackParamList>
+	>
+
 export type AuthTabParamList = {
 	Login: undefined
 	Signup: undefined
@@ -37,7 +48,7 @@ export type AuthTabParamList = {
 export type AuthTabScreenProps<Screen extends keyof AuthTabParamList> =
 	CompositeScreenProps<
 		BottomTabScreenProps<AuthTabParamList, Screen>,
-		NativeStackScreenProps<RootStackParamList>
+		NativeStackScreenProps<AuthStackParamList>
 	>
 
 type BaseItem = inferQueryOutput<'user.items'>[number]

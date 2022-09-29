@@ -12,6 +12,9 @@ import {
 } from '@app/components/Themed'
 import Header from '@app/components/Header'
 
+const { width } = Dimensions.get('window')
+const imageHeight = parseInt(String(width / 1.8))
+
 export default function BikeRegisterConfirm(
 	props: BikeRegisterStackScreenProps<'ConfirmRegister'>
 ) {
@@ -28,9 +31,6 @@ export default function BikeRegisterConfirm(
 		}
 	)
 
-	const { width } = Dimensions.get('window')
-	const imageHeight = parseInt(String(width / 1.8))
-
 	return (
 		<LayoutScrollView>
 			<View style={styles.container}>
@@ -39,7 +39,7 @@ export default function BikeRegisterConfirm(
 				<View style={styles.content}>
 					<View style={styles.bikeContainer}>
 						<Image
-							style={[styles.bikeImage, { height: imageHeight }]}
+							style={styles.bikeImage}
 							source={{ uri: imageUri }}
 							resizeMode="cover"
 						/>
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
 	bikeImage: {
 		width: '100%',
 		maxWidth: 360,
+		height: imageHeight,
 	},
 	bikeTitle: {
 		fontWeight: '500',

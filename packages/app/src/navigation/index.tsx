@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import {
 	RootStackParamList,
+	AuthStackParamList,
 	AuthTabParamList,
 	MainStackParamList,
 	BikeRegisterStackParamList,
@@ -17,8 +18,9 @@ import { useAuth } from '@app/lib/auth'
 import ErrorScreen from '@app/screens/ErrorScreen'
 import ModalScreen from '@app/screens/ModalScreen'
 import NotFoundScreen from '@app/screens/NotFoundScreen'
-import Login from '@app/screens/Login'
-import Signup from '@app/screens/Signup'
+import Onboarding from '@app/screens/Auth/Onboarding'
+import Login from '@app/screens/Auth/Login'
+import Signup from '@app/screens/Auth/Signup'
 import Home from '@app/screens/Home'
 import Account from '@app/screens/Account'
 import UsernameChange from '@app/screens/UsernameChange'
@@ -89,9 +91,29 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
+const AuthStack = createNativeStackNavigator<AuthStackParamList>()
 const AuthTab = createBottomTabNavigator<AuthTabParamList>()
 
 function AuthNavigator() {
+	return (
+		<AuthStack.Navigator
+			initialRouteName="Onboarding"
+			screenOptions={{
+				contentStyle,
+				header: () => null,
+			}}
+		>
+			<AuthStack.Screen name="Onboarding" component={Onboarding} />
+			<AuthStack.Screen
+				name="Tab"
+				component={AuthTabNavigator}
+				options={{ animationTypeForReplace: 'pop' }}
+			/>
+		</AuthStack.Navigator>
+	)
+}
+
+function AuthTabNavigator() {
 	return (
 		<AuthTab.Navigator
 			initialRouteName="Login"
@@ -116,14 +138,8 @@ function MainNavigator() {
 				contentStyle,
 				header: () => null,
 			}}
-			key="main-stack"
 		>
-			<MainStack.Screen
-				name="Home"
-				component={Home}
-				key="hello-world"
-				navigationKey="hello-world"
-			/>
+			<MainStack.Screen name="Home" component={Home} />
 
 			<MainStack.Screen name="Account" component={Account} />
 
