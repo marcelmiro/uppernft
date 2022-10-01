@@ -13,8 +13,6 @@ body {
 	font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
 		Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
 		sans-serif;
-	// position: relative;
-	// overflow-x: hidden;
 }
 
 html,
@@ -34,4 +32,22 @@ button {
 	text-align: left;
 	background: inherit;
 	position: relative;
+}
+
+input,
+textarea {
+	-webkit-appearance: none;
+	outline: none;
+	border: none;
+	background: none;
+}
+
+#nprogress {
+	$color: rgb(var(--accent));
+	.bar {
+		background-color: $color !important;
+	}
+	.peg {
+		box-shadow: 0 0 0.625rem $color, 0 0 0.3125rem $color !important;
+	}
 }

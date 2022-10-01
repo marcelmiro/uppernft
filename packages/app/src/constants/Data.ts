@@ -13,7 +13,7 @@ type Onboarding = Array<{
 
 export const onboarding: Onboarding = [
 	{
-		title: 'Generate an NFT for each physical bike',
+		title: 'Generate an NFT for each physical bike you own',
 		description:
 			"Bike NFTs are tradable digital assets recorded in the blockchain. Each NFT represents a unique bike in the real world, which allows users to verify a bike's authenticity by requesting its history in the blockchain.",
 		image: ImageCertificate,

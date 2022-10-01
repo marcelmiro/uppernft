@@ -38,6 +38,6 @@
 	"devDependencies": {
 		"patch-package": "^6.4.7",
 		"postinstall-postinstall": "^2.1.0",
-		"turbo": "^1.5.4"
+		"turbo": "^1.5.5"
 	}
 }

@@ -4,13 +4,23 @@ import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
 import { loggerLink } from '@trpc/client/links/loggerLink'
 import { withTRPC } from '@trpc/next'
 import superjson from 'superjson'
+import NextNProgress from 'nextjs-progressbar'
 
 import type { AppRouter } from '@web/server/router'
 import { getBaseUrl } from '@web/utils/url'
 import '@web/styles/globals.scss'
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-	return <Component {...pageProps} />
+	return (
+		<>
+			<NextNProgress
+				height={3}
+				showOnShallow={true}
+				options={{ showSpinner: false }}
+			/>
+			<Component {...pageProps} />
+		</>
+	)
 }
 
 export default withTRPC<AppRouter>({
