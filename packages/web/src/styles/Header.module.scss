@@ -45,6 +45,10 @@
 	&:focus-within {
 		outline-color: rgb(var(--primary-400));
 	}
+	&.error {
+		outline-color: rgb(var(--error));
+		animation: shake 0.3s linear;
+	}
 }
 
 .searchIcon {
@@ -95,12 +99,39 @@
 }
 
 .searchSubmitContainer.disabled {
-	cursor: not-allowed;
+	cursor: pointer;
 
 	.searchSubmitIcon {
 		pointer-events: none;
 		svg {
 			fill: rgb(var(--primary-300));
 		}
+	}
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0);
+	}
+	12% {
+		transform: translateX(0.25rem);
+	}
+	24% {
+		transform: translateX(-0.25rem);
+	}
+	48% {
+		transform: translateX(0.25rem);
+	}
+	60% {
+		transform: translateX(0);
+	}
+	72% {
+		transform: translateX(0.25rem);
+	}
+	84% {
+		transform: translateX(-0.25rem);
+	}
+	100% {
+		transform: translateX(0);
 	}
 }

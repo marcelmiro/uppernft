@@ -10,6 +10,8 @@ import styles from '@web/styles/Header.module.scss'
 
 export default function Header() {
 	const [searchValue, setSearchValue] = useState('')
+	const [searchErrorAnimation, setSearchErrorAnimation] = useState(false)
+
 	const searchRef = useRef<HTMLInputElement>(null)
 	const searchSubmitRef = useRef<HTMLAnchorElement>(null)
 
@@ -39,7 +41,13 @@ export default function Header() {
 				<p className={styles.companyName}>upperNFT</p>
 			</div>
 
-			<div className={styles.searchContainer} onClick={focusSearch}>
+			<div
+				onClick={focusSearch}
+				className={classNames(styles.searchContainer, {
+					[styles.error as string]: searchErrorAnimation,
+				})}
+				onAnimationEnd={() => setSearchErrorAnimation(false)}
+			>
 				<div className={styles.searchIcon}>
 					<IconSearch />
 				</div>
@@ -52,11 +60,19 @@ export default function Header() {
 						type="text"
 						className={styles.searchInput}
 						placeholder="Serial number"
-						onKeyPress={(e) => e.key === 'Enter' && submitSearch()}
+						onKeyPress={(e) =>
+							e.key === 'Enter' &&
+							(isSearchValueValid
+								? submitSearch()
+								: setSearchErrorAnimation(true))
+						}
 					/>
 				</label>
 
 				<div
+					onClick={() =>
+						!isSearchValueValid && setSearchErrorAnimation(true)
+					}
 					className={classNames(styles.searchSubmitContainer, {
 						[styles.disabled as string]: !isSearchValueValid,
 					})}
