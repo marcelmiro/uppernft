@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
-import { z } from 'zod'
 
 import { AuthTabScreenProps } from '@app/navigation/types'
 import Colors from '@app/constants/Colors'

@@ -94,6 +94,7 @@ export function parseErrorMessage(
 	try {
 		const tempMessage = JSON.parse(error.message)[0]?.message
 		if (tempMessage) message = tempMessage
+		// eslint-disable-next-line no-empty
 	} catch (e) {}
 
 	if (UNSUPPORTED_ERROR_MESSAGES.includes(message))

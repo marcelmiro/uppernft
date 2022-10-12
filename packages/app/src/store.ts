@@ -14,10 +14,8 @@ export const sidStore = {
 	},
 	set: (newSessionToken: string) => {
 		sidStore.value = newSessionToken
-		return SecureStore.setItemAsync(SESSION_NAME, newSessionToken)
-	},
-	delete: () => {
-		sidStore.value = ''
-		return SecureStore.deleteItemAsync(SESSION_NAME)
+		return newSessionToken
+			? SecureStore.setItemAsync(SESSION_NAME, newSessionToken)
+			: SecureStore.deleteItemAsync(SESSION_NAME)
 	},
 }

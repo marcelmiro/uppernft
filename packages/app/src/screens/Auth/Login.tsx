@@ -65,7 +65,7 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 
 					<ErrorMessage>{error}</ErrorMessage>
 
-					<TextLink style={styles.forgotPassword} onPress={() => {}}>
+					<TextLink style={styles.forgotPassword}>
 						Forgot password?
 					</TextLink>
 				</View>

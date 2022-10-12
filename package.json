@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "turbo run dev --parallel",
+		"lint": "turbo run lint --parallel",
 		"db:push": "yarn workspace @uppernft/db push",
 		"db:studio": "yarn workspace @uppernft/db studio",
 		"web:dev": "yarn workspace @uppernft/web dev",
@@ -14,12 +15,11 @@
 		"app:start": "yarn workspace @uppernft/app start",
 		"app:android": "yarn workspace @uppernft/app android",
 		"app:ios": "yarn workspace @uppernft/app ios",
-		"app:web": "yarn workspace @uppernft/app web",
-		"app:eject": "yarn workspace @uppernft/app eject",
-		"app:test": "yarn workspace @uppernft/app test",
-		"app:build": "cd packages/app && npx eas build -p android --profile preview",
+		"app:lint": "yarn workspace @uppernft/app lint",
+		"app:build": "yarn workspace @uppernft/app build",
 		"clean": "cmd.exe /c \"@for /d /r . %d in (node_modules) do @if exist %d (echo %d && rd %d /s /q)\" && del .\\yarn.lock",
-		"postinstall": "yarn workspace @uppernft/db prisma generate && patch-package"
+		"postinstall": "yarn workspace @uppernft/db prisma generate && patch-package",
+		"prepare": "husky install"
 	},
 	"workspaces": {
 		"packages": [
@@ -36,6 +36,7 @@
 	"author": "Marcel Miro <marcelmiro1@hotmail.com>",
 	"license": "MIT",
 	"devDependencies": {
+		"husky": "^8.0.1",
 		"patch-package": "^6.4.7",
 		"postinstall-postinstall": "^2.1.0",
 		"turbo": "^1.5.6"

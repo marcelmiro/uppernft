@@ -10,6 +10,7 @@ export default function BikeTransferAfterInfo({
 	navigation,
 }: BikeTransferStackScreenProps<'AfterTransferInfo'>) {
 	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function beforeRemoveHandler(e: any) {
 			e.preventDefault()
 			navigation.navigate('Root', { screen: 'Home' })

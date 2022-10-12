@@ -41,7 +41,7 @@ interface SettingProps {
 	title: string
 	desc?: string
 	icon: React.FC<SvgProps>
-	onPress(): void
+	onPress?(): void
 	toggleValue?: boolean
 	iconFill?: string
 }
@@ -141,10 +141,7 @@ export default function Account(props: MainStackScreenProps<'Account'>) {
 					report bike thefts and notify people that scan or search
 					your bike online.
 				</Text>
-				<Button
-					onPress={() => {}}
-					containerStyle={styles.helpModalButton}
-				>
+				<Button containerStyle={styles.helpModalButton}>
 					Learn more
 				</Button>
 			</Modal>
@@ -218,17 +215,9 @@ export default function Account(props: MainStackScreenProps<'Account'>) {
 							onPress={openTwitter}
 						/>
 
-						<Setting
-							title="Privacy policy"
-							icon={IconDocument}
-							onPress={() => {}}
-						/>
+						<Setting title="Privacy policy" icon={IconDocument} />
 
-						<Setting
-							title="Terms & conditions"
-							icon={IconInfo}
-							onPress={() => {}}
-						/>
+						<Setting title="Terms & conditions" icon={IconInfo} />
 					</View>
 				</View>
 
@@ -245,7 +234,6 @@ export default function Account(props: MainStackScreenProps<'Account'>) {
 							title="Close account"
 							icon={IconBin}
 							iconFill={Colors.error}
-							onPress={() => {}}
 						/>
 					</View>
 				</View>

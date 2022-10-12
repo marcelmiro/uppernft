@@ -15,14 +15,16 @@ type Required<T extends Record<string, unknown>> = {
 	[K in keyof T]: NonNullable<T[K]>
 }
 
-interface CarouselProps<ItemT = any>
+interface CarouselProps<ItemT = unknown>
 	extends Required<
 		Pick<FlatListProps<ItemT>, 'data' | 'renderItem' | 'keyExtractor'>
 	> {
 	containerStyle?: StyleProp<ViewStyle>
 }
 
-type OnScrollEvent = Parameters<NonNullable<FlatListProps<any>['onScroll']>>[0]
+type OnScrollEvent = Parameters<
+	NonNullable<FlatListProps<unknown>['onScroll']>
+>[0]
 
 const width = Dimensions.get('window').width
 
@@ -30,7 +32,7 @@ function SlideComponent({ children }: React.PropsWithChildren) {
 	return <View style={styles.slideContainer}>{children}</View>
 }
 
-export default function Carousel<ItemT = any>({
+export default function Carousel<ItemT = unknown>({
 	data,
 	renderItem,
 	keyExtractor,

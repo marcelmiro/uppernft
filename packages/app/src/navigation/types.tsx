@@ -11,12 +11,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { inferQueryOutput } from '@app/utils/trpc'
 
-declare global {
-	namespace ReactNavigation {
-		interface RootParamList extends RootStackParamList {}
-	}
-}
-
 export type RootStackParamList = {
 	Root:
 		| NavigatorScreenParams<AuthTabParamList>

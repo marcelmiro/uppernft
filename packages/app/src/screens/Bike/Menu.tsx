@@ -43,7 +43,6 @@ interface TheftModalProps {
 interface TheftInfoModalProps {
 	show: boolean
 	handleClose(): void
-	onPress(): void
 }
 
 const WEB_URL = Constants.manifest?.extra?.WEB_URL
@@ -187,7 +186,6 @@ export default function BikeMenu(props: MainStackScreenProps<'BikeMenu'>) {
 						<TheftInfoModal
 							show={showTheftInfoModal}
 							handleClose={() => setShowTheftInfoModal(false)}
-							onPress={() => {}}
 						/>
 
 						<Pressable

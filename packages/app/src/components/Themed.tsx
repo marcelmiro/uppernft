@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
 	StyleSheet,
 	Text as DefaultText,
@@ -7,7 +6,6 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 	PressableProps,
-	GestureResponderEvent,
 	StyleProp,
 	ViewStyle,
 	Switch as DefaultSwitch,
@@ -18,13 +16,13 @@ import { FontAwesome } from '@expo/vector-icons'
 import Colors from '@app/constants/Colors'
 
 type TextLinkProps = DefaultText['props'] & {
-	onPress(): void
+	onPress?(): void
 	containerStyle?: DefaultText['props']['style']
 	hitSlop?: number
 }
 
 type ButtonProps = DefaultText['props'] & {
-	onPress: PressableProps['onPress']
+	onPress?: PressableProps['onPress']
 	disabled?: boolean
 	isLoading?: boolean
 	containerStyle?: StyleProp<ViewStyle>

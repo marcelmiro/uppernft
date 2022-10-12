@@ -72,15 +72,15 @@ export function useAppRedirect({ path = '', query }: UseAppRedirectOptions) {
 		fallback: redirectOptions.fallbackUrl,
 	}
 
-	function onWindowBlur() {
-		setWindowFocus(false)
-	}
-
-	function onWindowVisibilityChange() {
-		setWindowFocus(window.document.visibilityState !== 'hidden')
-	}
-
 	useEffect(() => {
+		function onWindowBlur() {
+			setWindowFocus(false)
+		}
+
+		function onWindowVisibilityChange() {
+			setWindowFocus(window.document.visibilityState !== 'hidden')
+		}
+
 		window.addEventListener('blur', onWindowBlur)
 		document.addEventListener('visibilitychange', onWindowVisibilityChange)
 

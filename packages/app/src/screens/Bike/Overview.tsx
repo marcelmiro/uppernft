@@ -31,7 +31,12 @@ function propToLabel(text: string) {
 }
 
 function getComponents(data: inferQueryOutput<'item.overview'>) {
-	const { id, createdAt, updatedAt, ...components } = data.components
+	const {
+		id: _id,
+		createdAt: _createdAt,
+		updatedAt: _updatedAt,
+		...components
+	} = data.components
 
 	const items: ItemProps[] = [
 		{
@@ -59,7 +64,7 @@ function Item({ label, value }: ItemProps) {
 			<Text style={styles.itemValue}>{value}</Text>
 
 			{isComponentEditable && (
-				<Pressable onPress={() => {}} style={styles.itemButton}>
+				<Pressable style={styles.itemButton}>
 					<Text style={styles.itemButtonText}>Change</Text>
 				</Pressable>
 			)}

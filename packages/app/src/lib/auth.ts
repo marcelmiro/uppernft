@@ -136,7 +136,7 @@ export function useLogout(options?: UseMutationOptions) {
 
 	const { queryClient } = trpc.useContext()
 
-	const { mutate, isLoading, error } = useMutation(sidStore.delete, {
+	const { mutate, isLoading, error } = useMutation(() => sidStore.set(''), {
 		...options,
 		onSuccess(data, variables, context) {
 			options?.onSuccess?.(data, variables, context)

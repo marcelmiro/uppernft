@@ -15,7 +15,7 @@ interface SettingProps {
 	title: string
 	desc?: string
 	icon: React.FC<SvgProps>
-	onPress(): void
+	onPress?(): void
 	iconFill?: string
 }
 
@@ -48,15 +48,12 @@ export default function BikeSettings(
 
 	const { queryClient } = trpc.useContext()
 
-	const { mutate: mutateDelete, isLoading } = trpc.useMutation(
-		['item.delete'],
-		{
-			onSuccess() {
-				queryClient.removeQueries(['user.items'])
-				props.navigation.reset({ routes: [{ name: 'Home' }] })
-			},
-		}
-	)
+	const { mutate: mutateDelete } = trpc.useMutation(['item.delete'], {
+		onSuccess() {
+			queryClient.removeQueries(['user.items'])
+			props.navigation.reset({ routes: [{ name: 'Home' }] })
+		},
+	})
 
 	return (
 		<View style={styles.wrapper}>
@@ -72,14 +69,12 @@ export default function BikeSettings(
 								title="Show receipt"
 								desc="View the receipt image as an additional proof of purchase"
 								icon={IconReceipt}
-								onPress={() => {}}
 							/>
 
 							<Setting
 								title="Change receipt"
 								desc="Change the receipt image for a new one"
 								icon={IconWrite}
-								onPress={() => {}}
 							/>
 						</View>
 					</View>
