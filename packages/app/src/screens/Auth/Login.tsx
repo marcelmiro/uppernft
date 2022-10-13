@@ -24,6 +24,9 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 	const [isButtonDisabled, setIsButtonDisabled] = useState(true)
 
 	const { login, isLoading } = useLogin({
+		onMutate() {
+			setError('')
+		},
 		onSuccess() {
 			setIsButtonDisabled(true)
 			setError('')
@@ -73,7 +76,7 @@ export default function Login({ navigation }: AuthTabScreenProps<'Login'>) {
 				<View>
 					<Button
 						onPress={handleLogin}
-						disabled={isButtonDisabled || isLoading}
+						disabled={isButtonDisabled}
 						isLoading={isLoading}
 					>
 						Log in

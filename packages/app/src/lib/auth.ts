@@ -85,13 +85,13 @@ export function useSignup(options?: UseTRPCMutationOptions<'auth.signup'>) {
 	const { mutate, isLoading, error } = trpc.useMutation(['auth.signup'], {
 		...options,
 		onMutate(variables) {
-			options?.onMutate?.(variables)
 			signupSchema.parse(variables)
+			options?.onMutate?.(variables)
 		},
 		onSuccess(data, variables, context) {
-			options?.onSuccess?.(data, variables, context)
 			sidStore.set(data.sessionToken)
 			setUser(data.user)
+			options?.onSuccess?.(data, variables, context)
 		},
 		retry(count, e) {
 			return handleRetry(count, e, ['BAD_REQUEST'])
@@ -115,13 +115,13 @@ export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
 	const { mutate, isLoading, error } = trpc.useMutation(['auth.login'], {
 		...options,
 		onMutate(variables) {
-			options?.onMutate?.(variables)
 			loginSchema.parse(variables)
+			options?.onMutate?.(variables)
 		},
 		onSuccess(data, variables, context) {
-			options?.onSuccess?.(data, variables, context)
 			sidStore.set(data.sessionToken)
 			setUser(data.user)
+			options?.onSuccess?.(data, variables, context)
 		},
 		retry(count, e) {
 			return handleRetry(count, e, ['NOT_FOUND'])
@@ -139,9 +139,9 @@ export function useLogout(options?: UseMutationOptions) {
 	const { mutate, isLoading, error } = useMutation(() => sidStore.set(''), {
 		...options,
 		onSuccess(data, variables, context) {
-			options?.onSuccess?.(data, variables, context)
 			setUser(null)
 			queryClient.removeQueries(['user.items'])
+			options?.onSuccess?.(data, variables, context)
 		},
 		retry(count) {
 			return count < 5
