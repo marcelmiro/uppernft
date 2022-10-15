@@ -399,7 +399,11 @@ export default function Bike(props: BikeProps) {
 				<div>
 					<h1 className={styles.mainTitle}>{name}</h1>
 					<p className={styles.mainSubtitle}>
-						Owned by <em>@{owner}</em>
+						Owned by{' '}
+						<em>
+							{!owner.startsWith('0x') && '@'}
+							{owner}
+						</em>
 					</p>
 				</div>
 			</main>

@@ -66,7 +66,7 @@ export default async function item(
 		code: item.model.code,
 		imageUri: item.model.imageUri,
 		stolen: item.isStolen,
-		owner: item.owner.username,
+		owner: item.owner?.username || item.ownerAddress,
 		components,
 		activity: formattedActivity,
 	}
