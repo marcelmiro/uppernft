@@ -51,8 +51,8 @@ const itemModels: Prisma.ItemModelCreateInput[] = [
 	},
 ]
 
-function populate() {
-	return Promise.all(
+async function populate() {
+	await Promise.all(
 		itemModels.map((model) => prisma.itemModel.create({ data: model }))
 	)
 }

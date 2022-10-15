@@ -6,7 +6,8 @@ export const userRouter = createRouter().query('items', {
 		const user = await validateSession(ctx)
 
 		const items = await ctx.prisma.item.findMany({
-			where: { ownerId: user.id },
+			// where: { ownerId: user.id },
+			where: { owner: { id: user.id } },
 			include: { model: true },
 		})
 

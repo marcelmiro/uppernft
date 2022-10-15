@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { atom, useAtom } from 'jotai'
+import { atom } from 'nanostores'
+import { useStore } from '@nanostores/react'
 import { z } from 'zod'
 import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 import { TRPCClientErrorLike } from '@trpc/client'
@@ -33,15 +34,15 @@ function handleRetry(
 }
 
 export function useAuth() {
-	const [isReady, setIsReady] = useAtom(isReadyAtom)
-	const [user, setUser] = useAtom(userAtom)
+	const isReady = useStore(isReadyAtom)
+	const user = useStore(userAtom)
 	const [hasAborted, setHasAborted] = useState(false)
 
 	const { error } = trpc.useQuery(['auth.verify'], {
 		enabled: !isReady,
-		onSuccess: setUser,
+		onSuccess: userAtom.set,
 		onSettled() {
-			setIsReady(true)
+			isReadyAtom.set(true)
 		},
 		retry(count, e) {
 			return handleRetry(count, e, ['FORBIDDEN', 'UNAUTHORIZED'], () =>
@@ -80,8 +81,6 @@ const signupSchema = z.object({
 })
 
 export function useSignup(options?: UseTRPCMutationOptions<'auth.signup'>) {
-	const [, setUser] = useAtom(userAtom)
-
 	const { mutate, isLoading, error } = trpc.useMutation(['auth.signup'], {
 		...options,
 		onMutate(variables) {
@@ -90,7 +89,7 @@ export function useSignup(options?: UseTRPCMutationOptions<'auth.signup'>) {
 		},
 		onSuccess(data, variables, context) {
 			sidStore.set(data.sessionToken)
-			setUser(data.user)
+			userAtom.set(data.user)
 			options?.onSuccess?.(data, variables, context)
 		},
 		retry(count, e) {
@@ -110,8 +109,6 @@ const loginSchema = z.object({
 })
 
 export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
-	const [, setUser] = useAtom(userAtom)
-
 	const { mutate, isLoading, error } = trpc.useMutation(['auth.login'], {
 		...options,
 		onMutate(variables) {
@@ -120,7 +117,7 @@ export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
 		},
 		onSuccess(data, variables, context) {
 			sidStore.set(data.sessionToken)
-			setUser(data.user)
+			userAtom.set(data.user)
 			options?.onSuccess?.(data, variables, context)
 		},
 		retry(count, e) {
@@ -132,14 +129,12 @@ export function useLogin(options?: UseTRPCMutationOptions<'auth.login'>) {
 }
 
 export function useLogout(options?: UseMutationOptions) {
-	const [, setUser] = useAtom(userAtom)
-
 	const { queryClient } = trpc.useContext()
 
 	const { mutate, isLoading, error } = useMutation(() => sidStore.set(''), {
 		...options,
 		onSuccess(data, variables, context) {
-			setUser(null)
+			userAtom.set(null)
 			queryClient.removeQueries(['user.items'])
 			options?.onSuccess?.(data, variables, context)
 		},

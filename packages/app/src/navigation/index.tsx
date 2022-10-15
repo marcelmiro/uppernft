@@ -41,7 +41,7 @@ const contentStyle: StyleProp<ViewStyle> = {
 
 export default function Navigation() {
 	const { isLoadingComplete, isError } = useCachedResources()
-	if (!isLoadingComplete) return null
+	if (!isLoadingComplete && !isError) return null
 
 	return (
 		<NavigationContainer

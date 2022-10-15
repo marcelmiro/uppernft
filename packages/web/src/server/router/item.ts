@@ -65,7 +65,7 @@ export const itemRouter = createRouter()
 					message: 'Bike not found',
 				})
 
-			if (item.ownerId !== user.id)
+			if (item.ownerAddress !== user.walletAddress)
 				throw new TRPCError({
 					code: 'FORBIDDEN',
 					message: "You don't have permission to manage this bike",
@@ -130,10 +130,19 @@ export const itemRouter = createRouter()
 			// FUTURE: Temp code to generate bike from fake model
 			const code = serialNumber.slice(-3)
 
-			const model = await ctx.prisma.itemModel.findUnique({
-				where: { code },
-				include: { components: true },
-			})
+			const [item, model] = await Promise.all([
+				ctx.prisma.item.findUnique({ where: { serialNumber } }),
+				ctx.prisma.itemModel.findUnique({
+					where: { code },
+					include: { components: true },
+				}),
+			])
+
+			if (item)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Bike is already registered',
+				})
 
 			if (!model)
 				throw new TRPCError({
@@ -141,12 +150,20 @@ export const itemRouter = createRouter()
 					message: 'Bike not found',
 				})
 
-			const { id, createdAt, updatedAt, ...components } = model.components
+			// TODO: Mint token
 
-			// TODO: Handle serialNumber duplicate error
+			const {
+				id: _id,
+				createdAt: _createdAt,
+				updatedAt: _updatedAt,
+				...components
+			} = model.components
+
 			return ctx.prisma.item.create({
 				data: {
 					serialNumber,
+					// TODO: Get tokenId from blockchain tx
+					tokenId: Math.floor(Math.random() * 999_999_999),
 					model: { connect: { id: model.id } },
 					owner: { connect: { id: user.id } },
 					components: { create: components },
@@ -185,7 +202,7 @@ export const itemRouter = createRouter()
 					message: 'Bike not found',
 				})
 
-			if (item.ownerId !== user.id)
+			if (item.ownerAddress !== user.walletAddress)
 				throw new TRPCError({
 					code: 'FORBIDDEN',
 					message: "You don't have permission to transfer this bike",
@@ -220,15 +237,17 @@ export const itemRouter = createRouter()
 					message: 'User not found',
 				})
 
-			if (item.ownerId === beneficiary.id)
+			if (item.ownerAddress === beneficiary.walletAddress)
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
 					message: 'Cannot transfer to the same owner',
 				})
 
+			// TODO: Transfer token
+
 			return ctx.prisma.item.update({
 				where: { id: item.id },
-				data: { ownerId: beneficiary.id },
+				data: { ownerAddress: beneficiary.walletAddress },
 			})
 		},
 	})
@@ -249,11 +268,13 @@ export const itemRouter = createRouter()
 					message: 'Bike not found',
 				})
 
-			if (item.ownerId !== user.id)
+			if (item.ownerAddress !== user.walletAddress)
 				throw new TRPCError({
 					code: 'FORBIDDEN',
 					message: "You don't have permission to manage this bike",
 				})
+
+			// TODO: Burn token
 
 			return ctx.prisma.item.delete({ where: { serialNumber } })
 		},

@@ -46,13 +46,13 @@ model ItemModel {
 
 model Item {
     id           Int        @id @default(autoincrement())
-    // tokenId      Int        @unique
     model        ItemModel  @relation(fields: [modelId], references: [id])
     modelId      Int
+    tokenId      Int        @unique
     serialNumber String     @unique
     isStolen     Boolean    @default(false)
-    owner        User       @relation(fields: [ownerId], references: [id])
-    ownerId      Int
+    owner        User?      @relation(fields: [ownerAddress], references: [walletAddress])
+    ownerAddress String
     activities   Activity[]
     components   Components @relation(fields: [componentsId], references: [id])
     componentsId Int        @unique

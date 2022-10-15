@@ -10,7 +10,6 @@ import {
 import classNames from 'classnames'
 
 import styles from '@web/styles/Modal.module.scss'
-import useMeasure from 'react-use-measure'
 
 interface ModalProps extends PropsWithChildren {
 	initialShow?: boolean
@@ -40,8 +39,6 @@ const Modal: ForwardRefRenderFunction<ModalRefProps, ModalProps> = (
 	const [opening, setOpening] = useState(false)
 	const [closing, setClosing] = useState(false)
 	useImperativeHandle(ref, () => ({ requestOpen, requestClose }))
-
-	const [tRef, { height }] = useMeasure()
 
 	/**
 	 * Hack: Set show on following re-render after setting opening in requestOpen()
@@ -86,7 +83,6 @@ const Modal: ForwardRefRenderFunction<ModalRefProps, ModalProps> = (
 			<div
 				className={classNames(containerClassName, styles.container)}
 				style={transitionStyle}
-				ref={tRef}
 			>
 				<div className={styles.content}>{children}</div>
 			</div>
