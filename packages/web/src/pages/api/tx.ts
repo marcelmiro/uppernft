@@ -80,16 +80,14 @@ export default async function tx(
 		return
 	}
 
-	let reqBody: Body | undefined
-	try {
-		reqBody = JSON.parse(req.body)
-	} catch (e) {}
+	let reqBody: Body | undefined = req.body
 
 	// FUTURE: Change accepted streams to `confirmed` === true
 	// FUTURE: Validate request by `streamId`
 	if (!reqBody) return res.status(400).send({ message: 'Bad request' })
 
-	for (const transfer of reqBody.nftTransfers) processNftTransfer(transfer)
+	for (const transfer of reqBody.nftTransfers)
+		await processNftTransfer(transfer)
 
-	return res.status(201).send({ success: true })
+	return res.status(200).send({ success: true })
 }

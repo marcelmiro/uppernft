@@ -165,19 +165,7 @@ export const itemRouter = createRouter()
 				...components
 			} = model.components
 
-			const newItem = await ctx.prisma.item.create({
-				data: {
-					serialNumber,
-					model: { connect: { id: model.id } },
-					owner: { connect: { id: user.id } },
-					components: { create: components },
-					activities: {
-						create: [{ type: 'MINT', externalLink: txUrl }],
-					},
-				},
-			})
-
-			ctx.prisma.$transaction([
+			const [newItem] = await ctx.prisma.$transaction([
 				ctx.prisma.item.create({
 					data: {
 						serialNumber,
