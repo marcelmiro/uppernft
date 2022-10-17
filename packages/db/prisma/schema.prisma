@@ -45,19 +45,20 @@ model ItemModel {
 }
 
 model Item {
-    id           Int        @id @default(autoincrement())
-    model        ItemModel  @relation(fields: [modelId], references: [id])
-    modelId      Int
-    tokenId      Int        @unique
-    serialNumber String     @unique
-    isStolen     Boolean    @default(false)
-    owner        User?      @relation(fields: [ownerAddress], references: [walletAddress])
-    ownerAddress String
-    activities   Activity[]
-    components   Components @relation(fields: [componentsId], references: [id])
-    componentsId Int        @unique
-    createdAt    DateTime   @default(now())
-    updatedAt    DateTime   @updatedAt
+    id                      Int                      @id @default(autoincrement())
+    model                   ItemModel                @relation(fields: [modelId], references: [id])
+    modelId                 Int
+    tokenId                 Int?                     @unique
+    serialNumber            String                   @unique
+    isStolen                Boolean                  @default(false)
+    owner                   User?                    @relation(fields: [ownerAddress], references: [walletAddress])
+    ownerAddress            String
+    activities              Activity[]
+    components              Components               @relation(fields: [componentsId], references: [id])
+    componentsId            Int                      @unique
+    unconfirmedTransactions UnconfirmedTransaction[]
+    createdAt               DateTime                 @default(now())
+    updatedAt               DateTime                 @updatedAt
 }
 
 enum ActivityType {
@@ -93,4 +94,11 @@ model Components {
     itemModel      ItemModel?
     createdAt      DateTime   @default(now())
     updatedAt      DateTime   @updatedAt
+}
+
+model UnconfirmedTransaction {
+    id     Int    @id @default(autoincrement())
+    hash   String
+    item   Item   @relation(fields: [itemId], references: [id])
+    itemId Int
 }

@@ -58,8 +58,8 @@ async function populate() {
 }
 
 async function main() {
-	// return prisma.components.create({ data: itemModels[0].components.create })
-	// return populate()
+	// await prisma.components.create({ data: itemModels[0].components.create })
+	await populate()
 }
 
 main()

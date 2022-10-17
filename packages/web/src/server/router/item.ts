@@ -4,6 +4,7 @@ import type { User } from '@prisma/client'
 
 import { createRouter } from './context'
 import { validateSession } from '@web/lib/auth'
+import { mintToken } from '@web/lib/web3'
 
 export const itemRouter = createRouter()
 	.query('overview', {
@@ -150,7 +151,12 @@ export const itemRouter = createRouter()
 					message: 'Bike not found',
 				})
 
-			// TODO: Mint token
+			const { hash, txUrl } = await mintToken({
+				serialNumber,
+				to: user.walletAddress,
+				name: model.name,
+				imageUri: model.imageUri,
+			})
 
 			const {
 				id: _id,
@@ -159,25 +165,39 @@ export const itemRouter = createRouter()
 				...components
 			} = model.components
 
-			return ctx.prisma.item.create({
+			const newItem = await ctx.prisma.item.create({
 				data: {
 					serialNumber,
-					// TODO: Get tokenId from blockchain tx
-					tokenId: Math.floor(Math.random() * 999_999_999),
 					model: { connect: { id: model.id } },
 					owner: { connect: { id: user.id } },
 					components: { create: components },
 					activities: {
-						create: [
-							{
-								type: 'MINT',
-								externalLink:
-									'https://rinkeby.etherscan.io/tx/0x2fcb9255113e8980525f6edb2fa28551a95b0d5d4ca3d4010aaec466c948206f',
-							},
-						],
+						create: [{ type: 'MINT', externalLink: txUrl }],
 					},
 				},
 			})
+
+			ctx.prisma.$transaction([
+				ctx.prisma.item.create({
+					data: {
+						serialNumber,
+						model: { connect: { id: model.id } },
+						owner: { connect: { id: user.id } },
+						components: { create: components },
+						activities: {
+							create: [{ type: 'MINT', externalLink: txUrl }],
+						},
+					},
+				}),
+				ctx.prisma.unconfirmedTransaction.create({
+					data: {
+						hash,
+						item: { connect: { serialNumber } },
+					},
+				}),
+			])
+
+			return newItem
 		},
 	})
 	.mutation('transfer', {
@@ -276,6 +296,7 @@ export const itemRouter = createRouter()
 
 			// TODO: Burn token
 
+			// FUTURE: Set `deleted` prop to `true` instead of deleting item
 			return ctx.prisma.item.delete({ where: { serialNumber } })
 		},
 	})

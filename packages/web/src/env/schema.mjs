@@ -8,6 +8,12 @@ import { z } from 'zod'
 export const serverSchema = z.object({
 	NODE_ENV: z.enum(['development', 'test', 'production']),
 	DATABASE_URL: z.string().url(),
+
+	// Blockchain
+	TOKEN_ADDRESS: z.string().min(1),
+	RELAYER_API_KEY: z.string().min(1),
+	RELAYER_SECRET_KEY: z.string().min(1),
+	BLOCKCHAIN_EXPLORER_TX_BASE: z.string().url(),
 })
 
 /**

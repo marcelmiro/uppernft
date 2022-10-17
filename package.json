@@ -7,6 +7,7 @@
 		"lint": "turbo run lint --parallel",
 		"db:push": "yarn workspace @uppernft/db push",
 		"db:studio": "yarn workspace @uppernft/db studio",
+		"db:seed": "yarn workspace @uppernft/db seed",
 		"web:dev": "yarn workspace @uppernft/web dev",
 		"web:build": "yarn workspace @uppernft/web build",
 		"web:start": "yarn workspace @uppernft/web start",
