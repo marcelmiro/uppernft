@@ -71,7 +71,7 @@ enum ActivityType {
 model Activity {
     id           Int          @id @default(autoincrement())
     type         ActivityType
-    item         Item         @relation(fields: [itemId], references: [id])
+    item         Item         @relation(fields: [itemId], references: [id], onDelete: Cascade)
     itemId       Int
     externalLink String?
     createdAt    DateTime     @default(now())
@@ -99,6 +99,6 @@ model Components {
 model UnconfirmedTransaction {
     id     Int    @id @default(autoincrement())
     hash   String
-    item   Item   @relation(fields: [itemId], references: [id])
+    item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
     itemId Int
 }
