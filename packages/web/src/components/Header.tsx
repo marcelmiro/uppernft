@@ -77,13 +77,13 @@ export default function Header() {
 						[styles.disabled as string]: !isSearchValueValid,
 					})}
 				>
-					<Link href={`/bike/${searchValue}`} target="_self">
-						<a
-							ref={searchSubmitRef}
-							className={styles.searchSubmitIcon}
-						>
-							<IconArrowRight />
-						</a>
+					<Link
+						ref={searchSubmitRef}
+						href={`/bike/${searchValue}`}
+						target="_self"
+						className={styles.searchSubmitIcon}
+					>
+						<IconArrowRight />
 					</Link>
 				</div>
 			</div>

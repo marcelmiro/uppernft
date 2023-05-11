@@ -286,23 +286,22 @@ function Register({ serialNumber, name, imageUri }: RegisterProps) {
 				</p>
 
 				<div className={styles.registerModalLinks}>
-					<Link href={appStoreUrls.android}>
-						<a
-							target="_blank"
-							rel="noopener noreferrer"
-							className={styles.registerModalLink}
-						>
-							<IconAndroidAppStore />
-						</a>
+					<Link
+						href={appStoreUrls.android}
+						target="_blank"
+						rel="noopener noreferrer"
+						className={styles.registerModalLink}
+					>
+						<IconAndroidAppStore />
 					</Link>
-					<Link href={appStoreUrls.ios}>
-						<a
-							target="_blank"
-							rel="noopener noreferrer"
-							className={styles.registerModalLink}
-						>
-							<IconIosAppStore />
-						</a>
+
+					<Link
+						href={appStoreUrls.ios}
+						target="_blank"
+						rel="noopener noreferrer"
+						className={styles.registerModalLink}
+					>
+						<IconIosAppStore />
 					</Link>
 				</div>
 
@@ -363,10 +362,8 @@ export default function Bike(props: BikeProps) {
 				<p className={styles.emptyText}>
 					Sorry, we could not find the bike you want.
 				</p>
-				<Link href="/">
-					<a target="_self" className={styles.button}>
-						Go home
-					</a>
+				<Link href="/" target="_self" className={styles.button}>
+					Go home
 				</Link>
 			</Layout>
 		)

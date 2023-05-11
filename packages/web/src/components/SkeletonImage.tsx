@@ -4,12 +4,9 @@ import classNames from 'classnames'
 
 import styles from '@web/styles/Skeleton.module.scss'
 
-type ObjectFit = 'contain' | 'cover'
-
 interface SkeletonImageProps {
 	src: string | StaticImageData
 	alt: string
-	objectFit?: ObjectFit
 	className?: string
 	priority?: boolean
 	blur?: boolean
@@ -18,7 +15,6 @@ interface SkeletonImageProps {
 export default function SkeletonImage({
 	src,
 	alt,
-	objectFit = 'cover',
 	className,
 	priority = false,
 	blur = false,
@@ -42,8 +38,6 @@ export default function SkeletonImage({
 				<Image
 					src={src}
 					alt={alt}
-					layout="fill"
-					objectFit={objectFit}
 					onLoadingComplete={() => setIsLoaded(true)}
 					onError={() => setNotFound(true)}
 					priority={priority}
